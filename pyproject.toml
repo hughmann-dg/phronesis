@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "phronesis-council"
+version = "0.1.0"
+description = "Source-grounded, pluralistic decision advisory"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Phronesis contributors" }]
+dependencies = []
+
+[project.scripts]
+phronesis = "phronesis.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

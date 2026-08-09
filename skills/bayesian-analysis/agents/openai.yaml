@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bayesian Analysis"
+  short_description: "Update confidence from evidence"
+  default_prompt: "Use $bayesian-analysis to calibrate uncertainty and information value."

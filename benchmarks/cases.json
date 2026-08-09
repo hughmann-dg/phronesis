@@ -1,0 +1,73 @@
+[
+  {
+    "id": "historical-winter-expedition",
+    "category": "historical",
+    "packet": {
+      "decision": "Should the city begin the winter expedition before all supply reports arrive?",
+      "objective": "Protect the alliance without exhausting the city's forces.",
+      "options": ["depart now", "delay until spring", "stage a limited advance"],
+      "constraints": ["winter weather", "allied city requests immediate aid", "supply reports are incomplete"],
+      "stakeholders": ["citizens", "soldiers", "allied city", "rival city"],
+      "assumptions": ["The rival will exploit delay"],
+      "unknowns": ["Mountain pass conditions", "Available grain at the midpoint"],
+      "reversibility": "low"
+    }
+  },
+  {
+    "id": "business-pricing",
+    "category": "business",
+    "packet": {
+      "decision": "How should a software company introduce usage-based pricing?",
+      "objective": "Improve sustainable revenue while retaining customer trust.",
+      "options": ["switch every account now", "delay pricing changes", "pilot with new accounts"],
+      "constraints": ["annual contracts", "board target due this quarter"],
+      "stakeholders": ["customers", "sales", "support", "investors"],
+      "known_facts": ["Twenty percent of accounts drive sixty percent of compute cost"],
+      "assumptions": ["Customers understand current cost drivers"],
+      "unknowns": ["Price elasticity by segment"],
+      "reversibility": "medium"
+    }
+  },
+  {
+    "id": "personal-job-offer",
+    "category": "personal",
+    "packet": {
+      "decision": "Should I accept a demanding job in another city?",
+      "objective": "Grow professionally without sacrificing health and close relationships.",
+      "options": ["accept now", "decline", "negotiate a three-month trial"],
+      "constraints": ["offer expires Friday", "relocation would affect a partner"],
+      "stakeholders": ["decision-maker", "partner", "family", "future team"],
+      "assumptions": ["The role requires relocation five days a week"],
+      "unknowns": ["Manager flexibility", "Actual weekly workload"],
+      "reversibility": "medium"
+    }
+  },
+  {
+    "id": "technical-system-migration",
+    "category": "technical",
+    "packet": {
+      "decision": "Should we migrate System X during Q4?",
+      "objective": "Reduce operational risk and technical debt without a major outage.",
+      "options": ["migrate now", "delay six months", "incremental migration"],
+      "constraints": ["December production freeze", "vendor support expires in March"],
+      "stakeholders": ["Operations", "Engineering", "Management", "Vendor"],
+      "assumptions": ["Operations can support a Q4 cutover"],
+      "unknowns": ["Rollback duration"],
+      "reversibility": "medium"
+    }
+  },
+  {
+    "id": "strategic-vendor",
+    "category": "strategic",
+    "packet": {
+      "decision": "Should the organization consolidate critical services with one vendor?",
+      "objective": "Reduce near-term operating cost while preserving strategic resilience.",
+      "options": ["consolidate now", "retain all vendors", "phase consolidation with an exit option"],
+      "constraints": ["renewal deadline", "limited procurement capacity"],
+      "stakeholders": ["procurement", "operations", "finance", "customers", "vendors"],
+      "assumptions": ["Volume discounts remain available after year one"],
+      "unknowns": ["Future switching cost", "Vendor reliability under regional failure"],
+      "reversibility": "low"
+    }
+  }
+]

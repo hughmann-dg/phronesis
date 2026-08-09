@@ -1,0 +1,4 @@
+interface:
+  display_name: "The Council"
+  short_description: "Convene independent pluralistic deliberation"
+  default_prompt: "Use $council to counsel, contest, red-team, and decide on this packet."

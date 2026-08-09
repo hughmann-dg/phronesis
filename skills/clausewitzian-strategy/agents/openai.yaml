@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clausewitzian Strategy"
+  short_description: "Stress-test objectives and execution friction"
+  default_prompt: "Use $clausewitzian-strategy to test this plan against uncertainty and friction."

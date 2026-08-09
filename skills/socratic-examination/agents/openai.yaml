@@ -1,0 +1,4 @@
+interface:
+  display_name: "Socratic Examination"
+  short_description: "Challenge a decision framing before advice"
+  default_prompt: "Use $socratic-examination to test the framing and assumptions of this decision."

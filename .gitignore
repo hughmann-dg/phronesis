@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+.coverage
+htmlcov/
+decisions/*.json
+sources/corpus/records/*.json
+sources/corpus/texts/*.txt

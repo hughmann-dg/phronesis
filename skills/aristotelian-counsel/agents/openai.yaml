@@ -1,0 +1,4 @@
+interface:
+  display_name: "Aristotelian Counsel"
+  short_description: "Apply practical wisdom to a decision"
+  default_prompt: "Use $aristotelian-counsel to identify the prudent action given these particulars."

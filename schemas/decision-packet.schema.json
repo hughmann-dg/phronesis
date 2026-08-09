@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://phronesis.local/schemas/decision-packet.schema.json",
+  "title": "Phronesis Decision Packet",
+  "type": "object",
+  "required": ["decision", "objective", "options"],
+  "additionalProperties": false,
+  "properties": {
+    "decision": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "options": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "constraints": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "stakeholders": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "known_facts": {"$ref": "#/$defs/claims"},
+    "facts": {"$ref": "#/$defs/claims"},
+    "assumptions": {"$ref": "#/$defs/claims"},
+    "estimates": {"$ref": "#/$defs/claims"},
+    "opinions": {"$ref": "#/$defs/claims"},
+    "unknowns": {"$ref": "#/$defs/claims"},
+    "time_horizon": {"type": ["string", "null"]},
+    "reversibility": {"enum": ["low", "medium", "high", "unknown"]},
+    "current_preference": {"type": ["string", "null"]},
+    "current_confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "metadata": {"type": "object"}
+  },
+  "$defs": {
+    "claims": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {"type": "string", "minLength": 1},
+          {
+            "type": "object",
+            "required": ["text"],
+            "additionalProperties": false,
+            "properties": {
+              "text": {"type": "string", "minLength": 1},
+              "kind": {"enum": ["fact", "assumption", "estimate", "opinion", "unknown"]},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "source": {"type": "string", "minLength": 1}
+            }
+          }
+        ]
+      }
+    }
+  }
+}

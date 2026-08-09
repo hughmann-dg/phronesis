@@ -1,0 +1,4 @@
+interface:
+  display_name: "Phronesis Red Team"
+  short_description: "Attack a leading decision without voting"
+  default_prompt: "Use $red-team to expose hidden assumptions and catastrophic failure modes."

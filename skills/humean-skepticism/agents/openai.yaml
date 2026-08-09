@@ -1,0 +1,4 @@
+interface:
+  display_name: "Humean Skepticism"
+  short_description: "Audit evidence, causality, and confidence"
+  default_prompt: "Use $humean-skepticism to distinguish observations from unsupported inference."

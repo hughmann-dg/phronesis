@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://phronesis.local/schemas/source-record.schema.json",
+  "title": "Phronesis Source Provenance Record",
+  "type": "object",
+  "required": ["id", "title", "author", "edition", "source_url", "rights_status", "rights_evidence", "retrieved_date", "ingestion_status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "title": {"type": "string", "minLength": 1},
+    "author": {"type": "string", "minLength": 1},
+    "translator": {"type": ["string", "null"]},
+    "edition": {"type": "string", "minLength": 1},
+    "publication_year": {"type": ["integer", "null"]},
+    "source_url": {"type": "string", "format": "uri"},
+    "rights_status": {"enum": ["public-domain-verified", "permission-granted", "restricted", "verification-required"]},
+    "rights_evidence": {"type": ["string", "null"]},
+    "retrieved_date": {"type": ["string", "null"], "format": "date"},
+    "ingestion_status": {"enum": ["candidate", "verified", "ingested", "excluded"]},
+    "sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "notes": {"type": ["string", "null"]}
+  }
+}

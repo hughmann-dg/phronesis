@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sun Tzu Positioning"
+  short_description: "Improve position, timing, and optionality"
+  default_prompt: "Use $sun-tzu-positioning to reshape this decision before committing."

@@ -1,0 +1,123 @@
+# Candidate catalog. None of these records is approved for ingestion yet.
+# Replace catalog searches with edition-specific URLs and rights evidence first.
+sources:
+  - id: aristotle-nicomachean-ethics
+    title: Nicomachean Ethics
+    author: Aristotle
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Nicomachean+Ethics+Aristotle"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate
+  - id: plato-dialogues
+    title: Dialogues of Plato
+    author: Plato
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Dialogues+Plato"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate
+  - id: epictetus-discourses-enchiridion
+    title: Discourses and Enchiridion
+    author: Epictetus
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Epictetus+Discourses+Enchiridion"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate
+  - id: seneca-moral-letters
+    title: Moral Letters
+    author: Seneca
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Seneca+Moral+Letters"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate
+  - id: marcus-aurelius-meditations
+    title: Meditations
+    author: Marcus Aurelius
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Marcus+Aurelius+Meditations"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate
+  - id: machiavelli-prince
+    title: The Prince
+    author: Niccolo Machiavelli
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Machiavelli+Prince"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate
+  - id: machiavelli-discourses
+    title: Discourses on Livy
+    author: Niccolo Machiavelli
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Machiavelli+Discourses+Livy"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate
+  - id: sun-tzu-art-of-war
+    title: The Art of War
+    author: Sun Tzu
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Sun+Tzu+Art+of+War"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate
+  - id: clausewitz-on-war
+    title: On War
+    author: Carl von Clausewitz
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Clausewitz+On+War"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate
+  - id: hume-enquiry
+    title: An Enquiry Concerning Human Understanding
+    author: David Hume
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Hume+Enquiry+Human+Understanding"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate
+  - id: mill-utilitarianism
+    title: Utilitarianism
+    author: John Stuart Mill
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Mill+Utilitarianism"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate
+  - id: bayes-essay
+    title: An Essay towards solving a Problem in the Doctrine of Chances
+    author: Thomas Bayes
+    translator: null
+    edition: "Candidate edition; verification required"
+    publication_year: null
+    source_url: "https://www.gutenberg.org/ebooks/search/?query=Thomas+Bayes+Doctrine+of+Chances"
+    rights_status: verification-required
+    retrieved_date: null
+    ingestion_status: candidate

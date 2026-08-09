@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://phronesis.local/schemas/decision-journal.schema.json",
+  "title": "Phronesis Decision Journal Entry",
+  "type": "object",
+  "required": ["id", "date", "decision_packet", "council_recommendation", "user_decision", "user_confidence", "council_confidence", "key_assumptions", "predicted_outcomes", "review_date", "actual_outcome", "lessons", "prediction_results"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9-]+$"},
+    "date": {"type": "string", "format": "date"},
+    "decision_packet": {"type": "object"},
+    "council_recommendation": {"type": "object"},
+    "user_decision": {"type": "string", "minLength": 1},
+    "user_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "council_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "key_assumptions": {"type": "array", "items": {"type": "string"}},
+    "predicted_outcomes": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "review_date": {"type": ["string", "null"], "format": "date"},
+    "actual_outcome": {"type": ["string", "null"]},
+    "lessons": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "prediction_results": {"type": "array", "items": {"type": "boolean"}}
+  }
+}

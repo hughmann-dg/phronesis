@@ -1,0 +1,4 @@
+interface:
+  display_name: "Consequentialist Analysis"
+  short_description: "Compare expected stakeholder consequences"
+  default_prompt: "Use $consequentialist-analysis to compare benefits, harms, and tradeoffs."

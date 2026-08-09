@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://phronesis.local/schemas/counsel-response.schema.json",
+  "title": "Phronesis Counsel Response",
+  "type": "object",
+  "required": ["school_id", "school_name", "recommendation", "strongest_reason", "reasoning", "assumptions", "major_risks", "confidence", "what_would_change", "disconfirming_evidence", "philosophical_basis"],
+  "additionalProperties": false,
+  "properties": {
+    "school_id": {"type": "string", "minLength": 1},
+    "school_name": {"type": "string", "minLength": 1},
+    "recommendation": {"type": ["string", "null"]},
+    "strongest_reason": {"type": "string", "minLength": 1},
+    "reasoning": {"$ref": "#/$defs/nonEmptyStrings"},
+    "assumptions": {"$ref": "#/$defs/strings"},
+    "major_risks": {"$ref": "#/$defs/nonEmptyStrings"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "what_would_change": {"$ref": "#/$defs/nonEmptyStrings"},
+    "disconfirming_evidence": {"$ref": "#/$defs/nonEmptyStrings"},
+    "philosophical_basis": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["principle", "source_id", "citation", "application", "grounding", "source_excerpt", "source_url"],
+        "additionalProperties": false,
+        "properties": {
+          "principle": {"type": "string", "minLength": 1},
+          "source_id": {"type": "string", "minLength": 1},
+          "citation": {"type": "string", "minLength": 1},
+          "application": {"type": "string", "minLength": 1},
+          "grounding": {"enum": ["doctrine-citation", "retrieved-primary-source"]},
+          "source_excerpt": {"type": ["string", "null"]},
+          "source_url": {"type": ["string", "null"], "format": "uri"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "strings": {"type": "array", "items": {"type": "string"}},
+    "nonEmptyStrings": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  }
+}

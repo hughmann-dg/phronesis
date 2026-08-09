@@ -1,0 +1,4 @@
+interface:
+  display_name: "Machiavellian Realism"
+  short_description: "Analyze power, incentives, and coalitions"
+  default_prompt: "Use $machiavellian-realism to test stakeholder incentives and resistance."

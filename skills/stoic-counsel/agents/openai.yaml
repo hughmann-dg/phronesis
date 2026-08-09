@@ -1,0 +1,4 @@
+interface:
+  display_name: "Stoic Counsel"
+  short_description: "Separate agency from uncontrollable outcomes"
+  default_prompt: "Use $stoic-counsel to distinguish controllable action from residual outcomes."

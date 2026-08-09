@@ -1,0 +1,14 @@
+{
+  "decision": "Should we migrate System X during Q4?",
+  "objective": "Reduce operational risk and technical debt without a major outage.",
+  "options": ["migrate now", "delay six months", "incremental migration"],
+  "constraints": ["limited engineering capacity", "December production freeze", "vendor support expires in March"],
+  "stakeholders": ["Operations", "Engineering", "Management", "Vendor"],
+  "known_facts": ["Vendor support expires in March"],
+  "assumptions": ["Operations can support a Q4 cutover"],
+  "unknowns": ["Holiday incident volume", "Migration rollback duration"],
+  "time_horizon": "12-24 months",
+  "reversibility": "medium",
+  "current_preference": "migrate now",
+  "current_confidence": 0.7
+}
