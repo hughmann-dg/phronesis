@@ -1,0 +1,24 @@
+{
+  "name": "phronesis",
+  "version": "0.1.0",
+  "description": "Source-grounded pluralistic decision counsel with explicit philosophical doctrines",
+  "author": {
+    "name": "Phronesis contributors"
+  },
+  "license": "Apache-2.0",
+  "keywords": ["decision-making", "philosophy", "source-grounding"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Phronesis",
+    "shortDescription": "Source-grounded pluralistic decision counsel",
+    "longDescription": "Examine decisions through independent philosophical doctrines, preserve disagreement, red-team the leader without a vote, and synthesize actionable counsel.",
+    "developerName": "Phronesis contributors",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Read"],
+    "defaultPrompt": [
+      "Examine this decision before advising me.",
+      "Run the Phronesis council on this decision.",
+      "Use Aristotle to analyze this decision."
+    ]
+  }
+}

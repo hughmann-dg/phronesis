@@ -32,6 +32,7 @@ class Doctrine:
     useful_when: tuple[str, ...]
     defer_when: tuple[str, ...]
     sources: tuple[SourceReference, ...]
+    reference_skill: str | None = None
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -47,6 +48,7 @@ class Doctrine:
             "useful_when": list(self.useful_when),
             "defer_when": list(self.defer_when),
             "sources": [source.__dict__ | {"citation": source.citation} for source in self.sources],
+            "reference_skill": self.reference_skill,
         }
 
 
@@ -92,23 +94,78 @@ _DOCTRINES = (
         sources=(
             _source("aristotle-nicomachean-ethics", "Nicomachean Ethics", "Aristotle", "Book VI, especially 5 and 7-9", "Practical wisdom concerns deliberation about contingent action"),
         ),
+        reference_skill="aristotle-works",
     ),
     Doctrine(
         id="stoic-counsel",
         name="Stoic Counsel",
-        primary_question="What part of this decision is actually under our control?",
-        primary_questions=("Is fear, anger, ego, or status distorting judgment?", "Can we prepare for an unfavorable outcome?", "Are decision quality and outcome quality being confused?"),
-        principles=("Distinguish what depends on us from what does not.", "Judge the quality of chosen action, not luck alone.", "Rehearse adversity without surrendering agency."),
-        procedure=("Classify controllables.", "Name emotional distortions.", "Choose the worthy controllable action.", "Prepare to accept residual outcomes."),
-        evidence_preferences=("Directly controllable actions", "observable commitments", "downside preparations"),
-        failure_modes=("Passivity", "emotional suppression", "calling avoidable harm uncontrollable"),
-        blind_spots=("Collective power", "distributional consequences"),
-        useful_when=("Anxiety or uncertainty is high", "outcomes depend heavily on others"),
-        defer_when=("Structural incentives are central", "harm to others requires outcome analysis"),
-        sources=(
-            _source("epictetus-discourses-enchiridion", "Enchiridion", "Epictetus", "1", "Distinguishing what is and is not up to us"),
-            _source("seneca-moral-letters", "Moral Letters", "Seneca", "Letter 13", "Preparing the mind for feared outcomes"),
+        primary_question="Which judgment and next act are up to us, what can we influence, and which outcome remains residual?",
+        primary_questions=(
+            "What was observed, and what interpretation has been added to it?",
+            "Is fear, anger, ego, status, or desire demanding an outcome controlled by others?",
+            "What conduct is required by the decision-maker's relationships and duties?",
+            "How can we prepare for an unfavorable outcome without calling preventable harm inevitable?",
         ),
+        principles=(
+            "Locate agency in one's own present judgments, impulses, and acts rather than guaranteed outcomes.",
+            "Test an impression before assenting to its interpretation.",
+            "Pursue preferred outcomes carefully without making worthy action depend on success.",
+            "Derive responsible conduct from relationships while retaining safety, rights, and truthfulness constraints.",
+            "Judge decision quality separately from outcome luck without dismissing the outcome's effects.",
+        ),
+        procedure=(
+            "Describe the observable event separately from the impression added to it.",
+            "Map one's own judgments and acts, influenceable conditions, and residual outcomes.",
+            "Name the fear, anger, ego, status, or desire pressure shaping assent.",
+            "Clarify duties and ethical constraints arising from the decision-maker's relationships.",
+            "Choose the worthy next act and prepare a contingency for residual outcomes.",
+            "Review the decision process and realized consequences separately.",
+        ),
+        evidence_preferences=(
+            "Observable events separated from interpretations",
+            "specific commitments within the decision-maker's agency",
+            "role and relationship duties",
+            "downside preparations and contingency triggers",
+        ),
+        failure_modes=(
+            "Passivity disguised as acceptance",
+            "emotional suppression or shaming grief",
+            "calling avoidable harm uncontrollable",
+            "confusing outside complete agency with outside influence",
+            "preserving unjust roles or individualizing a structural problem",
+        ),
+        blind_spots=("Collective power", "distributional consequences", "material and clinical causes of distress"),
+        useful_when=("Anxiety or uncertainty is high", "outcomes depend heavily on others", "status or anger is driving urgency"),
+        defer_when=(
+            "Immediate safety or self-harm intervention is required",
+            "Structural incentives or legal rights are central",
+            "Medical or clinical assessment is needed",
+            "Harm to others requires outcome and distributional analysis",
+        ),
+        sources=(
+            _source(
+                "epictetus-discourses-enchiridion",
+                "A Selection from the Discourses with the Encheiridion",
+                "Epictetus",
+                "Encheiridion 1, 4-5, 14, 20, 29-30, 34, 45, 48-51",
+                "Agency, impressions, dual intention, duties, commitment costs, and practice",
+            ),
+            _source(
+                "epictetus-teaching-rolleston",
+                "The Teaching of Epictetus",
+                "Epictetus",
+                "Books I.1-5; II.4-7, 27; III.1; V.2, 17-25",
+                "Preconceptions, three fields of training, relationships, habit, and conduct",
+            ),
+            _source(
+                "epictetus-golden-sayings-crossley",
+                "The Golden Sayings of Epictetus",
+                "Epictetus",
+                "XXIX-XXXIV, LI-LV, LXXIII-LXXV, CIV-CVI, CLX-CLXXIII",
+                "Comparative support for freedom, fear, habit, commitment, and roles",
+            ),
+        ),
+        reference_skill="epictetus-works",
     ),
     Doctrine(
         id="machiavellian-realism",

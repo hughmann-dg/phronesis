@@ -1,5 +1,6 @@
 import io
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -7,7 +8,7 @@ import unittest
 from phronesis.cli import main
 from phronesis.council import Council
 from phronesis.journal import DecisionJournal
-from phronesis.models import DecisionPacket
+from phronesis.models import DecisionPacket, ValidationError
 
 
 FIXTURE = Path(__file__).parent / "fixtures" / "system_migration.json"
@@ -43,6 +44,45 @@ class JournalTests(unittest.TestCase):
             self.assertEqual(insights["prediction_accuracy"], 1.0)
             self.assertEqual(insights["average_user_confidence"], 0.75)
 
+    def test_persisted_journal_entries_are_revalidated_instead_of_coerced(self) -> None:
+        packet = DecisionPacket.from_dict(json.loads(FIXTURE.read_text(encoding="utf-8")))
+        result = Council().convene(packet)
+        with tempfile.TemporaryDirectory() as directory:
+            journal = DecisionJournal(directory)
+            entry = journal.record(
+                packet,
+                result,
+                user_decision="incremental migration",
+                user_confidence=0.75,
+                predicted_outcomes=["No major outage"],
+            )
+            path = Path(directory, f"{entry.id}.json")
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            payload["prediction_results"] = ["false"]
+            path.write_text(json.dumps(payload), encoding="utf-8")
+
+            with self.assertRaisesRegex(ValidationError, "prediction_results"):
+                journal.get(entry.id)
+
+    def test_persisted_journal_date_cannot_be_null(self) -> None:
+        packet = DecisionPacket.from_dict(json.loads(FIXTURE.read_text(encoding="utf-8")))
+        result = Council().convene(packet)
+        with tempfile.TemporaryDirectory() as directory:
+            journal = DecisionJournal(directory)
+            entry = journal.record(
+                packet,
+                result,
+                user_decision="incremental migration",
+                user_confidence=0.75,
+            )
+            path = Path(directory, f"{entry.id}.json")
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            payload["date"] = None
+            path.write_text(json.dumps(payload), encoding="utf-8")
+
+            with self.assertRaisesRegex(ValidationError, "date"):
+                journal.get(entry.id)
+
 
 class CliTests(unittest.TestCase):
     def test_council_command_emits_machine_readable_result(self) -> None:
@@ -74,6 +114,31 @@ class CliTests(unittest.TestCase):
         stderr = io.StringIO()
 
         exit_code = main(["benchmark", "benchmarks/cases.json"], stdout=stdout, stderr=stderr)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(json.loads(stdout.getvalue())["total_cases"], 5)
+        self.assertEqual(stderr.getvalue(), "")
+
+    def test_audit_command_reports_repository_alignment(self) -> None:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        exit_code = main(["audit", "--root", "."], stdout=stdout, stderr=stderr)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(json.loads(stdout.getvalue())["errors"], [])
+        self.assertEqual(stderr.getvalue(), "")
+
+    def test_default_benchmark_asset_resolves_outside_the_repository_working_directory(self) -> None:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        original = Path.cwd()
+        with tempfile.TemporaryDirectory() as directory:
+            try:
+                os.chdir(directory)
+                exit_code = main(["benchmark"], stdout=stdout, stderr=stderr)
+            finally:
+                os.chdir(original)
 
         self.assertEqual(exit_code, 0)
         self.assertEqual(json.loads(stdout.getvalue())["total_cases"], 5)

@@ -13,4 +13,4 @@ description: Represent uncertainty with priors, likelihoods, updates, expected o
 
 Never launder guesses through precise numbers. Use ranges when inputs do not justify point estimates. Ground the conceptual basis in Thomas Bayes's essay on the doctrine of chances, Proposition 9 and its scholium.
 
-Return the standard counsel contract plus `priors`, `updates`, `sensitivity`, and `information_value`. Explain calculations plainly.
+Return the standard counsel contract. Put `priors`, `updates`, `sensitivity`, and `information_value` inside the contract's `extensions` object. Explain calculations plainly.

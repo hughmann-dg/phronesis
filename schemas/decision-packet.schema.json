@@ -4,6 +4,7 @@
   "title": "Phronesis Decision Packet",
   "type": "object",
   "required": ["decision", "objective", "options"],
+  "not": {"required": ["known_facts", "facts"]},
   "additionalProperties": false,
   "properties": {
     "decision": {"type": "string", "minLength": 1},

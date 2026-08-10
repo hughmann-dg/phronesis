@@ -16,6 +16,10 @@
     "confidence": {"type": "number", "minimum": 0, "maximum": 1},
     "what_would_change": {"$ref": "#/$defs/nonEmptyStrings"},
     "disconfirming_evidence": {"$ref": "#/$defs/nonEmptyStrings"},
+    "extensions": {
+      "type": "object",
+      "description": "School-specific structured analysis. Extensions must remain nested here so the shared top-level contract stays stable."
+    },
     "philosophical_basis": {
       "type": "array",
       "minItems": 1,

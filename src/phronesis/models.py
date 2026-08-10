@@ -26,6 +26,33 @@ class Reversibility(str, Enum):
     UNKNOWN = "unknown"
 
 
+_PACKET_PROPERTIES = {
+    "decision",
+    "objective",
+    "options",
+    "constraints",
+    "stakeholders",
+    "known_facts",
+    "facts",
+    "assumptions",
+    "estimates",
+    "opinions",
+    "unknowns",
+    "time_horizon",
+    "reversibility",
+    "current_preference",
+    "current_confidence",
+    "metadata",
+}
+_CLAIM_PROPERTIES = {"text", "kind", "confidence", "source"}
+
+
+def _reject_unknown(data: Mapping[str, Any], allowed: set[str], field_name: str) -> None:
+    unknown = sorted(set(data) - allowed)
+    if unknown:
+        raise ValidationError(f"{field_name} contains unexpected properties: {', '.join(unknown)}")
+
+
 def _text(value: Any, field_name: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ValidationError(f"{field_name} must be a non-empty string")
@@ -64,6 +91,10 @@ class Claim:
             return cls(text=_text(value, kind.value), kind=kind)
         if not isinstance(value, Mapping):
             raise ValidationError(f"{kind.value} entries must be strings or objects")
+        _reject_unknown(value, _CLAIM_PROPERTIES, f"{kind.value} entry")
+        supplied_kind = value.get("kind")
+        if supplied_kind is not None and supplied_kind != kind.value:
+            raise ValidationError(f"{kind.value}.kind must be {kind.value!r}")
         source = value.get("source")
         if source is not None:
             source = _text(source, f"{kind.value}.source")
@@ -113,6 +144,9 @@ class DecisionPacket:
     def from_dict(cls, data: Mapping[str, Any]) -> "DecisionPacket":
         if not isinstance(data, Mapping):
             raise ValidationError("decision packet must be an object")
+        _reject_unknown(data, _PACKET_PROPERTIES, "decision packet")
+        if "known_facts" in data and "facts" in data:
+            raise ValidationError("decision packet cannot contain both known_facts and facts")
         decision = _text(data.get("decision"), "decision")
         objective = _text(data.get("objective"), "objective")
         options = _strings(data.get("options"), "options")

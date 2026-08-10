@@ -2,7 +2,7 @@
 
 ## Examine
 
-Normalize the packet and use Socratic Examination when objectives, terms, options, or evidence are incomplete. Examination initially asks questions rather than voting.
+Normalize the packet and use the separate Socratic Examination seam when objectives, terms, options, or evidence are incomplete. Examination returns the standard counsel contract with a null recommendation and asks questions rather than voting. `Council.convene` begins only after intake is ready.
 
 ## Counsel
 
@@ -18,7 +18,7 @@ The red team attacks the leading recommendation for hidden assumptions, catastro
 
 ## Decide
 
-The arbiter selects an option using vote support and confidence, then reduces confidence for unresolved red-team exposure. It must preserve the strongest opposing argument, critical assumption, what would change the recommendation, and explicit disagreements.
+The arbiter selects an option using counsel support and confidence. The red team cannot add or subtract option support; it reduces confidence for unresolved exposure. The synthesis must preserve the strongest opposing argument, critical assumption, what would change the recommendation, and explicit disagreements.
 
 ## Review
 

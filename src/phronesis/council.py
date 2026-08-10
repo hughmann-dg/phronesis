@@ -1,4 +1,4 @@
-"""The Examine → Counsel → Contest → Decide Council workflow."""
+"""The Counsel → Contest → Decide workflow after packet examination."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from .contracts import (
     RedTeamReport,
     StageRecord,
     Synthesis,
+    validate_counsel_response,
 )
 from .doctrines import DEFAULT_COUNCIL, Doctrine, get_doctrine
 from .models import DecisionPacket, claim_texts
@@ -27,9 +28,22 @@ class Council:
 
     def __init__(self, reasoner: Reasoner | None = None) -> None:
         self.reasoner = reasoner or HeuristicReasoner()
+        corpus = getattr(self.reasoner, "corpus", None)
+        self.passage_verifier = getattr(corpus, "verifies_passage", None)
 
     def ask(self, school_id: str, packet: DecisionPacket) -> CounselResponse:
-        return self.reasoner.counsel(packet, get_doctrine(school_id))
+        doctrine = get_doctrine(school_id)
+        response = self.reasoner.counsel(packet, doctrine)
+        validate_counsel_response(
+            response,
+            options=packet.options,
+            expected_school_id=doctrine.id,
+            expected_school_name=doctrine.name,
+            allowed_sources=tuple((source.id, source.citation) for source in doctrine.sources),
+            allow_null_recommendation=doctrine.id == "socratic-examination",
+            passage_verifier=self.passage_verifier,
+        )
+        return response
 
     def examine(self, packet: DecisionPacket) -> CounselResponse:
         return self.ask("socratic-examination", packet)
@@ -115,22 +129,38 @@ class Council:
         counsels: tuple[CounselResponse, ...],
         packet: DecisionPacket,
     ) -> RedTeamReport:
-        assumptions = tuple(claim_texts(packet.assumptions)) or (
-            "The option can be executed with the stated capacity.",
-        )
+        stated_assumptions = set(claim_texts(packet.assumptions))
+        assumptions = tuple(
+            dict.fromkeys(
+                assumption
+                for counsel in counsels
+                for assumption in counsel.assumptions
+                if assumption not in stated_assumptions
+            )
+        ) or ("The leading option can be executed without an unstated dependency.",)
         unknown = claim_texts(packet.unknowns)
         stakeholder = packet.stakeholders[-1] if packet.stakeholders else "an unrepresented stakeholder"
         constraint = packet.constraints[0] if packet.constraints else "a hidden critical dependency"
+        rollback_failure = (
+            f"A non-reversible failure occurs while pursuing {recommendation!r} and rollback is unavailable."
+            if packet.reversibility.value == "low"
+            else f"The downside of {recommendation!r} exceeds the packet's {packet.reversibility.value} reversibility rating."
+        )
+        biases = ["planning fallacy", "sunk-cost reasoning"]
+        if packet.current_preference is not None:
+            biases.insert(0, "confirmation bias around the current preference")
+        else:
+            biases.insert(0, "premature consensus from a shared framing")
         return RedTeamReport(
             target_recommendation=recommendation,
             hidden_assumptions=assumptions,
             catastrophic_edge_cases=(
-                f"A non-reversible failure occurs while pursuing {recommendation!r} and rollback is unavailable.",
+                rollback_failure,
                 f"Two risks treated as independent fail together: {constraint} and {unknown[0] if unknown else 'an unmeasured operational risk'}.",
             ),
             incentive_failures=(f"{stakeholder} can block execution and gains no credible benefit from cooperating.",),
             fragile_dependencies=tuple(packet.constraints[:2]) or ("No critical dependency owner is named.",),
-            biases=("confirmation bias around the current preference", "planning fallacy", "sunk-cost reasoning"),
+            biases=tuple(biases),
             mitigation_tests=(
                 "Name an owner, observable pass condition, and rollback trigger for every critical assumption.",
                 "Run a bounded pilot or tabletop failure exercise before the irreversible step.",
@@ -157,18 +187,9 @@ class Council:
                 argument_score_by_option[counsel.recommendation] += (
                     counsel.confidence + source_bonus - challenge_penalty - fragility_penalty
                 )
-        if red_team is not None:
-            red_penalty = min(
-                0.22,
-                len(red_team.hidden_assumptions) * 0.025
-                + len(red_team.catastrophic_edge_cases) * 0.035
-                + len(red_team.incentive_failures) * 0.025
-                + len(red_team.fragile_dependencies) * 0.015,
-            )
-            argument_score_by_option[red_team.target_recommendation] -= red_penalty
-        recommendation = max(
+        recommendation = min(
             packet.options,
-            key=lambda option: (argument_score_by_option[option], -packet.options.index(option)),
+            key=lambda option: (-argument_score_by_option[option], option.casefold(), option),
         )
         supporters = tuple(c.school_id for c in counsels if c.recommendation == recommendation)
         lead = max(

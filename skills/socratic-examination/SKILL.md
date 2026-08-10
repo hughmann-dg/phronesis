@@ -16,4 +16,4 @@ Do not impersonate Socrates and do not recommend an option during the initial ex
 
 Ground the method in Plato's *Apology* 21d-23b and *Gorgias* 454c-461b. Cite the relevant work and locator; do not invent quotations.
 
-Return: `clarified_decision`, `contested_terms`, `questions`, `assumptions_treated_as_facts`, `missing_options`, `evidence_needed`, and `philosophical_basis`.
+Return the standard counsel contract with `recommendation: null`; use `reasoning` for the prioritized questions. Put `clarified_decision`, `contested_terms`, `assumptions_treated_as_facts`, `missing_options`, and `evidence_needed` inside the contract's `extensions` object.

@@ -8,11 +8,13 @@ from pathlib import Path
 import sys
 from typing import Any, Sequence, TextIO
 
+from .alignment import audit_repository
 from .benchmark import BenchmarkSuite
 from .council import Council
 from .doctrines import get_doctrine, list_doctrines
 from .journal import DecisionJournal
 from .models import DecisionPacket, ValidationError
+from .paths import asset_path
 from .reasoning import HeuristicReasoner
 from .sources import SourceCorpus
 
@@ -48,7 +50,11 @@ def _parser() -> argparse.ArgumentParser:
     doctrines.add_argument("school", nargs="?")
 
     benchmark = sub.add_parser("benchmark", help="run a cross-domain Council benchmark suite")
-    benchmark.add_argument("suite", nargs="?", default="benchmarks/cases.json")
+    benchmark.add_argument("suite", nargs="?", help="suite path; defaults to the bundled five-domain suite")
+    benchmark.add_argument("--corpus-dir", help="verified primary-source corpus used to measure grounded coverage")
+
+    audit = sub.add_parser("audit", help="verify doctrine, skill, source, schema, and package alignment")
+    audit.add_argument("--root", default=".", help="repository root to audit")
 
     sources = sub.add_parser("sources", help="ingest and search rights-verified primary texts")
     sources.add_argument("--corpus-dir", default="sources/corpus")
@@ -103,7 +109,8 @@ def main(
     try:
         args = _parser().parse_args(argv)
         corpus_dir = getattr(args, "corpus_dir", None)
-        council = Council(reasoner=HeuristicReasoner(SourceCorpus(corpus_dir))) if corpus_dir else Council()
+        corpus = SourceCorpus(corpus_dir) if corpus_dir else None
+        council = Council(reasoner=HeuristicReasoner(corpus)) if corpus else Council()
 
         if args.command == "validate":
             _emit(_load_packet(args.packet).to_dict(), stdout)
@@ -132,7 +139,12 @@ def main(
             payload = get_doctrine(args.school).to_dict() if args.school else [d.to_dict() for d in list_doctrines()]
             _emit(payload, stdout)
         elif args.command == "benchmark":
-            _emit(BenchmarkSuite.from_file(args.suite).run(), stdout)
+            suite_path = args.suite or asset_path("benchmarks/cases.json")
+            _emit(BenchmarkSuite.from_file(suite_path, council=council, corpus=corpus).run(), stdout)
+        elif args.command == "audit":
+            report = audit_repository(args.root)
+            _emit(report, stdout)
+            return 1 if report["errors"] else 0
         elif args.command == "sources":
             corpus = SourceCorpus(args.corpus_dir)
             if args.source_command == "list":

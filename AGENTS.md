@@ -8,4 +8,6 @@
 - Cite a source work and locator for every important doctrinal claim. Do not invent quotations.
 - Do not ingest a source until its specific edition or translation has verified rights evidence.
 - Runtime code should remain standard-library-only unless a dependency is justified in an architecture decision.
-- Run `python -m unittest discover -s tests -v` and the benchmark before committing.
+- Every new school must add a doctrine, an explicit baseline strategy, a matching skill, manifest source IDs with locators, and public-seam tests. School-specific output belongs under `extensions`.
+- When a counsel skill has a reference knowledge skill, declare it on the doctrine and explicitly route through it before quoting.
+- Run `python -m phronesis audit --root .`, `python -m unittest discover -s tests -v`, and the benchmark before committing.

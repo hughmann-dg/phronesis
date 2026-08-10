@@ -57,6 +57,40 @@ class DecisionPacketTests(unittest.TestCase):
 
         self.assertLessEqual(set(packet.to_dict()["known_facts"][0]), allowed)
 
+    def test_packet_rejects_properties_outside_the_public_schema(self) -> None:
+        with self.assertRaisesRegex(ValidationError, "unexpected"):
+            DecisionPacket.from_dict(
+                {
+                    "decision": "Choose",
+                    "objective": "Choose carefully",
+                    "options": ["A", "B"],
+                    "unexpected": "silently accepting this would diverge from the schema",
+                }
+            )
+
+    def test_claim_kind_cannot_contradict_its_packet_collection(self) -> None:
+        with self.assertRaisesRegex(ValidationError, "kind"):
+            DecisionPacket.from_dict(
+                {
+                    "decision": "Choose",
+                    "objective": "Choose carefully",
+                    "options": ["A", "B"],
+                    "assumptions": [{"text": "Observed directly", "kind": "fact"}],
+                }
+            )
+
+    def test_packet_rejects_both_fact_aliases_in_one_payload(self) -> None:
+        with self.assertRaisesRegex(ValidationError, "known_facts|facts"):
+            DecisionPacket.from_dict(
+                {
+                    "decision": "Choose",
+                    "objective": "Choose carefully",
+                    "options": ["A", "B"],
+                    "known_facts": ["Observed one"],
+                    "facts": ["Observed two"],
+                }
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

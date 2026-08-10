@@ -24,6 +24,12 @@ _ADAPTIVE = {"incremental", "phase", "phased", "pilot", "trial", "stage", "stage
 _DELAY = {"delay", "wait", "defer", "later", "postpone"}
 _IMMEDIATE = {"now", "immediate", "today", "q4", "launch"}
 _DEADLINE = {"expires", "deadline", "freeze", "must", "due", "urgent"}
+_EVIDENCE_GENERATING = {"experiment", "measure", "measurement", "pilot", "research", "test", "trial"}
+_COALITION_BUILDING = {"agreement", "coalition", "cooperate", "negotiate", "partner", "stakeholder"}
+_DIRECT_AGENCY = {"act", "adopt", "commit", "communicate", "decide", "mandate", "prepare"}
+_EXECUTION_ROBUSTNESS = {"fallback", "incremental", "phase", "phased", "reserve", "rollback", "stage"}
+_HUMAN_ENDS = {"fair", "legitimate", "sustainable", "trust", "worthy"}
+_HARM_REDUCTION = {"protect", "safe", "safety", "welfare"}
 
 
 @dataclass(frozen=True)
@@ -47,8 +53,8 @@ _SCHOOL_POLICIES = {
         0.28,
         "always",
         0,
-        "{recommendation} concentrates attention on controllable commitments and reduces dependence on a single favorable outcome.",
-        "Calling a dependency uncontrollable may excuse inadequate preparation",
+        "{recommendation} puts the next commitment within the decision-maker's agency while preserving a contingency for residual outcomes.",
+        "A dependency classified as residual may still be influenceable or carry a duty to intervene",
     ),
     "machiavellian-realism": _SchoolPolicy(
         0.31,
@@ -114,7 +120,7 @@ class HeuristicReasoner:
             return self._examine(packet, doctrine)
 
         scores = self._score_options(packet, doctrine)
-        ranked = sorted(packet.options, key=lambda option: (-scores[option], packet.options.index(option)))
+        ranked = sorted(packet.options, key=lambda option: (-scores[option], option.casefold(), option))
         recommendation = ranked[0]
         runner_up = ranked[1]
         margin = scores[recommendation] - scores[runner_up]
@@ -177,6 +183,7 @@ class HeuristicReasoner:
                 score += policy.adaptive_weight
             if policy and policy.delay_under_uncertainty and words & _DELAY and uncertainty:
                 score += policy.delay_under_uncertainty
+            score += _doctrine_adjustment(doctrine.id, packet, words, uncertainty)
             scores[option] = score
         return scores
 
@@ -237,8 +244,13 @@ class HeuristicReasoner:
     def _basis(self, doctrine: Doctrine, application: str) -> PhilosophicalBasis:
         source = doctrine.sources[0]
         if self.corpus is not None:
+            query = (
+                "in our power opinion desire aversion acts body property reputation offices"
+                if doctrine.id == "stoic-counsel"
+                else f"{doctrine.principles[0]} {doctrine.primary_question}"
+            )
             passages = self.corpus.search(
-                f"{doctrine.principles[0]} {doctrine.primary_question}",
+                query,
                 top_k=1,
                 source_ids=(source.id,),
             )
@@ -265,6 +277,12 @@ def recommendation_counts(counsels: tuple[CounselResponse, ...]) -> Counter[str]
     return Counter(counsel.recommendation for counsel in counsels if counsel.recommendation is not None)
 
 
+def supported_school_ids() -> tuple[str, ...]:
+    """Return voting doctrines with explicit deterministic baseline behavior."""
+
+    return tuple(sorted(_SCHOOL_POLICIES))
+
+
 def _policy_applies(policy: _SchoolPolicy, packet: DecisionPacket, uncertainty: int) -> bool:
     return {
         "always": True,
@@ -272,3 +290,32 @@ def _policy_applies(policy: _SchoolPolicy, packet: DecisionPacket, uncertainty: 
         "uncertainty": uncertainty > 0,
         "context": bool(packet.constraints or uncertainty),
     }[policy.adaptive_condition]
+
+
+def _doctrine_adjustment(
+    school_id: str,
+    packet: DecisionPacket,
+    option_tokens: set[str],
+    uncertainty: int,
+) -> float:
+    """Apply inspectable signals that correspond to each doctrine's procedure.
+
+    This remains a baseline rather than a substitute for full deliberation, but it
+    prevents every school from collapsing into one shared option-order heuristic.
+    """
+
+    if school_id == "aristotelian-counsel":
+        return len(option_tokens & _HUMAN_ENDS) * 0.12
+    if school_id == "stoic-counsel":
+        return len(option_tokens & _DIRECT_AGENCY) * 0.1
+    if school_id == "machiavellian-realism":
+        return len(option_tokens & _COALITION_BUILDING) * (0.16 if packet.stakeholders else 0.08)
+    if school_id == "clausewitzian-strategy":
+        return len(option_tokens & _EXECUTION_ROBUSTNESS) * 0.14
+    if school_id == "sun-tzu-positioning":
+        return len(option_tokens & (_ADAPTIVE | _COALITION_BUILDING)) * 0.08
+    if school_id in {"humean-skepticism", "bayesian-analysis"}:
+        return len(option_tokens & _EVIDENCE_GENERATING) * (0.16 if uncertainty else 0.05)
+    if school_id == "consequentialist-analysis":
+        return len(option_tokens & _HARM_REDUCTION) * (0.12 if packet.stakeholders else 0.06)
+    return 0.0

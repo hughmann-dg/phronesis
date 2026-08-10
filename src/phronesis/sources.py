@@ -32,6 +32,21 @@ class IngestionStatus(str, Enum):
 
 
 _INGESTIBLE_RIGHTS = {RightsStatus.PUBLIC_DOMAIN_VERIFIED, RightsStatus.PERMISSION_GRANTED}
+_SOURCE_PROPERTIES = {
+    "id",
+    "title",
+    "author",
+    "translator",
+    "edition",
+    "publication_year",
+    "source_url",
+    "rights_status",
+    "rights_evidence",
+    "retrieved_date",
+    "ingestion_status",
+    "sha256",
+    "notes",
+}
 
 
 def _required_text(data: Mapping[str, Any], key: str) -> str:
@@ -59,6 +74,11 @@ class SourceRecord:
 
     @classmethod
     def for_ingestion(cls, data: Mapping[str, Any], text: str) -> "SourceRecord":
+        if not isinstance(data, Mapping):
+            raise ValidationError("source metadata must be an object")
+        unknown = sorted(set(data) - _SOURCE_PROPERTIES)
+        if unknown:
+            raise ValidationError(f"source metadata contains unexpected properties: {', '.join(unknown)}")
         source_id = _required_text(data, "id")
         if not re.fullmatch(r"[a-z0-9-]+", source_id):
             raise ValidationError("source id must contain lowercase letters, digits, and hyphens only")
@@ -68,6 +88,12 @@ class SourceRecord:
             raise ValidationError("source rights_status is not recognized") from exc
         if rights_status not in _INGESTIBLE_RIGHTS:
             raise ValidationError("source rights must be public-domain-verified or permission-granted before ingestion")
+        try:
+            requested_status = IngestionStatus(_required_text(data, "ingestion_status"))
+        except ValueError as exc:
+            raise ValidationError("source ingestion_status is not recognized") from exc
+        if requested_status not in {IngestionStatus.VERIFIED, IngestionStatus.INGESTED}:
+            raise ValidationError("source ingestion_status must be verified before ingestion")
         rights_evidence = _required_text(data, "rights_evidence")
         source_url = _required_text(data, "source_url")
         parsed = urlparse(source_url)
@@ -80,16 +106,19 @@ class SourceRecord:
         if year is not None and (isinstance(year, bool) or not isinstance(year, int)):
             raise ValidationError("publication_year must be an integer or null")
         notes = data.get("notes")
-        if notes is not None:
-            notes = str(notes)
+        if notes is not None and not isinstance(notes, str):
+            raise ValidationError("source notes must be a string or null")
         retrieved_date = data.get("retrieved_date")
-        if retrieved_date is not None:
-            if not isinstance(retrieved_date, str):
-                raise ValidationError("source retrieved_date must be a YYYY-MM-DD string or null")
-            try:
-                date.fromisoformat(retrieved_date)
-            except ValueError as exc:
-                raise ValidationError("source retrieved_date must use YYYY-MM-DD") from exc
+        if not isinstance(retrieved_date, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", retrieved_date):
+            raise ValidationError("source retrieved_date must use YYYY-MM-DD")
+        try:
+            date.fromisoformat(retrieved_date)
+        except ValueError as exc:
+            raise ValidationError("source retrieved_date must use YYYY-MM-DD") from exc
+        calculated_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        supplied_hash = data.get("sha256")
+        if supplied_hash is not None and supplied_hash != calculated_hash:
+            raise ValidationError("source sha256 does not match the supplied text")
         return cls(
             id=source_id,
             title=_required_text(data, "title"),
@@ -102,18 +131,82 @@ class SourceRecord:
             rights_evidence=rights_evidence,
             retrieved_date=retrieved_date,
             ingestion_status=IngestionStatus.INGESTED,
-            sha256=hashlib.sha256(text.encode("utf-8")).hexdigest(),
+            sha256=calculated_hash,
             notes=notes,
         )
 
     @classmethod
     def from_dict(cls, data: Mapping[str, Any]) -> "SourceRecord":
+        if not isinstance(data, Mapping):
+            raise ValidationError("persisted source record must be an object")
+        unknown = sorted(set(data) - _SOURCE_PROPERTIES)
+        if unknown:
+            raise ValidationError(f"persisted source record contains unexpected properties: {', '.join(unknown)}")
+        required = {
+            "id",
+            "title",
+            "author",
+            "translator",
+            "edition",
+            "publication_year",
+            "source_url",
+            "rights_status",
+            "rights_evidence",
+            "retrieved_date",
+            "ingestion_status",
+            "sha256",
+            "notes",
+        }
+        missing = sorted(required - set(data))
+        if missing:
+            raise ValidationError(f"persisted source record is missing: {', '.join(missing)}")
+        source_id = _required_text(data, "id")
+        if not re.fullmatch(r"[a-z0-9-]+", source_id):
+            raise ValidationError("source id must contain lowercase letters, digits, and hyphens only")
+        try:
+            rights_status = RightsStatus(_required_text(data, "rights_status"))
+            ingestion_status = IngestionStatus(_required_text(data, "ingestion_status"))
+        except ValueError as exc:
+            raise ValidationError("persisted source status is not recognized") from exc
+        if rights_status not in _INGESTIBLE_RIGHTS or ingestion_status is not IngestionStatus.INGESTED:
+            raise ValidationError("persisted source rights and ingestion status are not usable")
+        retrieved_date = data.get("retrieved_date")
+        if not isinstance(retrieved_date, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", retrieved_date):
+            raise ValidationError("source retrieved_date must use YYYY-MM-DD")
+        try:
+            date.fromisoformat(retrieved_date)
+        except ValueError as exc:
+            raise ValidationError("source retrieved_date must use YYYY-MM-DD") from exc
+        source_url = _required_text(data, "source_url")
+        parsed = urlparse(source_url)
+        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+            raise ValidationError("source_url must be an absolute HTTP(S) URL")
+        year = data.get("publication_year")
+        if year is not None and (isinstance(year, bool) or not isinstance(year, int)):
+            raise ValidationError("publication_year must be an integer or null")
+        translator = data.get("translator")
+        if translator is not None and (not isinstance(translator, str) or not translator.strip()):
+            raise ValidationError("source translator must be a non-empty string or null")
+        notes = data.get("notes")
+        if notes is not None and not isinstance(notes, str):
+            raise ValidationError("source notes must be a string or null")
+        sha256 = data.get("sha256")
+        if not isinstance(sha256, str) or not re.fullmatch(r"[a-f0-9]{64}", sha256):
+            raise ValidationError("source sha256 must be a lowercase SHA-256 digest")
         return cls(
-            **{
-                **data,
-                "rights_status": RightsStatus(data["rights_status"]),
-                "ingestion_status": IngestionStatus(data["ingestion_status"]),
-            }
+            id=source_id,
+            title=_required_text(data, "title"),
+            author=_required_text(data, "author"),
+            translator=translator.strip() if isinstance(translator, str) else None,
+            edition=_required_text(data, "edition"),
+            publication_year=year,
+            source_url=source_url,
+            rights_status=rights_status,
+            rights_evidence=_required_text(data, "rights_evidence"),
+            retrieved_date=retrieved_date,
+            ingestion_status=ingestion_status,
+            sha256=sha256,
+            notes=notes,
         )
 
 
@@ -153,17 +246,66 @@ class SourceCorpus:
         if not isinstance(text, str) or not text.strip():
             raise ValidationError("source text must be non-empty UTF-8 text")
         record = SourceRecord.for_ingestion(metadata, text)
-        atomic_write_text(self.texts_dir / f"{record.id}.txt", text)
-        atomic_write_text(
-            self.records_dir / f"{record.id}.json",
-            json.dumps(asdict(record), indent=2, ensure_ascii=False) + "\n",
-        )
+        text_target = self.texts_dir / f"{record.id}.txt"
+        record_target = self.records_dir / f"{record.id}.json"
+        reserved = False
+        committed = False
+        try:
+            try:
+                reservation = os.open(record_target, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            except FileExistsError as exc:
+                raise ValidationError(f"source {record.id} already exists; use a new immutable source id") from exc
+            else:
+                os.close(reservation)
+                reserved = True
+            if text_target.exists():
+                raise ValidationError(f"source {record.id} already exists; use a new immutable source id")
+            atomic_write_text(text_target, text)
+            atomic_write_text(
+                record_target,
+                json.dumps(asdict(record), indent=2, ensure_ascii=False) + "\n",
+            )
+            committed = True
+        except Exception:
+            if text_target.is_file() and not committed:
+                text_target.unlink()
+            raise
+        finally:
+            if reserved and not committed and record_target.is_file():
+                record_target.unlink()
         return record
 
     def list_records(self) -> tuple[SourceRecord, ...]:
-        return tuple(
-            SourceRecord.from_dict(json.loads(path.read_text(encoding="utf-8")))
-            for path in sorted(self.records_dir.glob("*.json"))
+        records: list[SourceRecord] = []
+        for path in sorted(self.records_dir.glob("*.json")):
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                raise ValidationError(f"cannot read persisted source record {path.name}: {exc}") from exc
+            records.append(SourceRecord.from_dict(data))
+        return tuple(records)
+
+    def verifies_passage(self, source_id: str, excerpt: str, source_url: str, citation: str) -> bool:
+        """Confirm that a claimed excerpt exists in an intact, rights-verified local source."""
+
+        record = next((item for item in self.list_records() if item.id == source_id), None)
+        if record is None or record.source_url != source_url:
+            return False
+        text_path = self.texts_dir / f"{record.id}.txt"
+        if not text_path.is_file():
+            return False
+        payload = text_path.read_bytes()
+        if hashlib.sha256(payload).hexdigest() != record.sha256:
+            raise ValidationError(f"source {record.id} checksum does not match its provenance record")
+        try:
+            source_text = payload.decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise ValidationError(f"source {record.id} is not valid UTF-8") from exc
+        paragraphs = [part.strip() for part in re.split(r"\n\s*\n", source_text) if part.strip()]
+        return any(
+            paragraph == excerpt
+            and citation == f"{record.author}, {record.title}, paragraph {index}"
+            for index, paragraph in enumerate(paragraphs, start=1)
         )
 
     def search(
@@ -181,12 +323,23 @@ class SourceCorpus:
         allowed = set(source_ids) if source_ids is not None else None
         candidates: list[SourcePassage] = []
         for record in self.list_records():
+            if record.rights_status not in _INGESTIBLE_RIGHTS:
+                raise ValidationError(f"source {record.id} rights are not ingestible")
+            if record.ingestion_status is not IngestionStatus.INGESTED:
+                raise ValidationError(f"source {record.id} is not marked ingested")
             if allowed is not None and record.id not in allowed:
                 continue
             text_path = self.texts_dir / f"{record.id}.txt"
             if not text_path.is_file():
-                continue
-            paragraphs = [part.strip() for part in re.split(r"\n\s*\n", text_path.read_text(encoding="utf-8")) if part.strip()]
+                raise ValidationError(f"source {record.id} is missing its text")
+            payload = text_path.read_bytes()
+            if hashlib.sha256(payload).hexdigest() != record.sha256:
+                raise ValidationError(f"source {record.id} checksum does not match its provenance record")
+            try:
+                source_text = payload.decode("utf-8")
+            except UnicodeDecodeError as exc:
+                raise ValidationError(f"source {record.id} is not valid UTF-8") from exc
+            paragraphs = [part.strip() for part in re.split(r"\n\s*\n", source_text) if part.strip()]
             for index, paragraph in enumerate(paragraphs, start=1):
                 paragraph_tokens = _tokens(paragraph)
                 overlap = query_tokens & paragraph_tokens

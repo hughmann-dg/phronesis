@@ -20,6 +20,8 @@ from .storage import atomic_write_text
 def _validate_date(value: str | None, field_name: str) -> str | None:
     if value is None:
         return None
+    if not isinstance(value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        raise ValidationError(f"{field_name} must use YYYY-MM-DD")
     try:
         date.fromisoformat(value)
     except (TypeError, ValueError) as exc:
@@ -48,20 +50,68 @@ class JournalEntry:
 
     @classmethod
     def from_dict(cls, data: Mapping[str, Any]) -> "JournalEntry":
+        if not isinstance(data, Mapping):
+            raise ValidationError("journal entry must be an object")
+        allowed = {
+            "id",
+            "date",
+            "decision_packet",
+            "council_recommendation",
+            "user_decision",
+            "user_confidence",
+            "council_confidence",
+            "key_assumptions",
+            "predicted_outcomes",
+            "review_date",
+            "actual_outcome",
+            "lessons",
+            "prediction_results",
+        }
+        unknown = sorted(set(data) - allowed)
+        missing = sorted(allowed - set(data))
+        if unknown:
+            raise ValidationError(f"journal entry contains unexpected properties: {', '.join(unknown)}")
+        if missing:
+            raise ValidationError(f"journal entry is missing: {', '.join(missing)}")
+        entry_id = data.get("id")
+        if not isinstance(entry_id, str) or not re.fullmatch(r"[A-Za-z0-9-]+", entry_id):
+            raise ValidationError("journal entry id is invalid")
+        decision_packet = data.get("decision_packet")
+        recommendation = data.get("council_recommendation")
+        if not isinstance(decision_packet, Mapping) or not isinstance(recommendation, Mapping):
+            raise ValidationError("journal decision_packet and council_recommendation must be objects")
+        DecisionPacket.from_dict(decision_packet)
+        user_decision = data.get("user_decision")
+        if not isinstance(user_decision, str) or not user_decision.strip():
+            raise ValidationError("journal user_decision must be a non-empty string")
+        predicted_outcomes = _persisted_strings(data.get("predicted_outcomes"), "predicted_outcomes")
+        key_assumptions = _persisted_strings(data.get("key_assumptions"), "key_assumptions", allow_empty_values=False)
+        lessons = _persisted_strings(data.get("lessons"), "lessons")
+        raw_results = data.get("prediction_results")
+        if not isinstance(raw_results, list) or any(not isinstance(value, bool) for value in raw_results):
+            raise ValidationError("prediction_results must contain only booleans")
+        if raw_results and len(raw_results) != len(predicted_outcomes):
+            raise ValidationError("prediction_results must match predicted_outcomes")
+        actual_outcome = data.get("actual_outcome")
+        if actual_outcome is not None and (not isinstance(actual_outcome, str) or not actual_outcome.strip()):
+            raise ValidationError("journal actual_outcome must be a non-empty string or null")
+        entry_date = _validate_date(data.get("date"), "date")
+        if entry_date is None:
+            raise ValidationError("journal date must use YYYY-MM-DD")
         return cls(
-            id=str(data["id"]),
-            date=str(data["date"]),
-            decision_packet=dict(data["decision_packet"]),
-            council_recommendation=dict(data["council_recommendation"]),
-            user_decision=str(data["user_decision"]),
-            user_confidence=float(data["user_confidence"]),
-            council_confidence=float(data["council_confidence"]),
-            key_assumptions=tuple(data.get("key_assumptions", ())),
-            predicted_outcomes=tuple(data.get("predicted_outcomes", ())),
-            review_date=data.get("review_date"),
-            actual_outcome=data.get("actual_outcome"),
-            lessons=tuple(data.get("lessons", ())),
-            prediction_results=tuple(bool(value) for value in data.get("prediction_results", ())),
+            id=entry_id,
+            date=entry_date,
+            decision_packet=dict(decision_packet),
+            council_recommendation=dict(recommendation),
+            user_decision=user_decision.strip(),
+            user_confidence=_persisted_confidence(data.get("user_confidence"), "user_confidence"),
+            council_confidence=_persisted_confidence(data.get("council_confidence"), "council_confidence"),
+            key_assumptions=key_assumptions,
+            predicted_outcomes=predicted_outcomes,
+            review_date=_validate_date(data.get("review_date"), "review_date"),
+            actual_outcome=actual_outcome.strip() if isinstance(actual_outcome, str) else None,
+            lessons=lessons,
+            prediction_results=tuple(raw_results),
         )
 
 
@@ -190,3 +240,17 @@ def _lesson_themes(entries: list[JournalEntry]) -> list[dict[str, Any]]:
         for theme, words in themes.items()
     ]
     return [item for item in sorted(counts, key=lambda item: (-item["mentions"], item["theme"])) if item["mentions"]]
+
+
+def _persisted_confidence(value: Any, field_name: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not 0 <= value <= 1:
+        raise ValidationError(f"journal {field_name} must be between 0 and 1")
+    return float(value)
+
+
+def _persisted_strings(value: Any, field_name: str, *, allow_empty_values: bool = False) -> tuple[str, ...]:
+    if not isinstance(value, list):
+        raise ValidationError(f"journal {field_name} must be an array of strings")
+    if any(not isinstance(item, str) or (not allow_empty_values and not item.strip()) for item in value):
+        raise ValidationError(f"journal {field_name} must contain non-empty strings")
+    return tuple(item.strip() for item in value)

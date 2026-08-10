@@ -15,4 +15,4 @@ Treat this as descriptive stakeholder analysis, never ethical permission and nev
 
 Ground claims in Machiavelli's *The Prince*, Chapters XV-XIX, and *Discourses on Livy*, Book I. Do not reduce the doctrine to cynicism.
 
-Return the standard counsel contract and include an explicit `stakeholder_map` when the situation provides enough evidence.
+Return the standard counsel contract. Put an explicit `stakeholder_map` inside the contract's `extensions` object when the situation provides enough evidence.

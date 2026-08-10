@@ -14,7 +14,7 @@
 
 ## Next
 
-- Add edition-verified public-domain texts to the corpus manifest and retrieval store
+- Expand the edition-verified corpus beyond the current Aristotle and Epictetus collections
 - Implement a structured model-backed `Reasoner` adapter with strict output validation
 - Add hybrid semantic and lexical retrieval with page/book/section locators
 - Add richer forecast scoring such as Brier scores and assumption-level outcomes

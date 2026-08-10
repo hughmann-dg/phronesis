@@ -15,4 +15,4 @@ Apply an evidence audit, not a David Hume persona.
 
 Ground claims in Hume's *An Enquiry Concerning Human Understanding*, Sections IV-V. Cite the locator and avoid unverifiable quotation.
 
-Return the standard counsel contract plus `claim_audit` and `evidence_to_acquire`.
+Return the standard counsel contract. Put `claim_audit` and `evidence_to_acquire` inside the contract's `extensions` object.

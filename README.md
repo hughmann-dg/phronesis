@@ -12,10 +12,10 @@ It does **not** simulate famous people. A response is produced by a documented d
 - Every counsel response includes a philosophical basis and source locator.
 - A rights-aware local corpus can ingest and retrieve verified primary texts.
 - The decision journal records choices, confidence, predictions, outcomes, and lessons.
-- A five-domain benchmark checks contracts and citation coverage.
+- A five-domain benchmark checks validated contracts, declared citations, and verified-primary-source coverage separately.
 - The package uses only the Python standard library at runtime.
 
-The included reasoner is a transparent deterministic baseline. The `Reasoner` protocol in `phronesis.council` is the seam for a model-backed implementation; doctrine, independence, validation, citations, and journaling remain unchanged.
+The included reasoner is a transparent deterministic baseline with explicit school-specific signals and stable, order-independent tie breaking. It is useful for exercising the system, but it is not a substitute for full doctrinal deliberation. The `Reasoner` protocol in `phronesis.council` is the seam for a model-backed implementation; every response is validated before it enters cross-examination or synthesis.
 
 ## Install
 
@@ -31,6 +31,18 @@ $env:PYTHONPATH = "src"
 python -m phronesis council tests/fixtures/system_migration.json
 ```
 
+## Install the Codex plugin
+
+The repository root is a skills-only Codex plugin through `.codex-plugin/plugin.json`. A Python install makes the CLI available but does not register Codex skills. From this checkout, give Codex this exact request:
+
+```text
+$plugin-creator Add the existing plugin at C:\Users\mikes\Documents\Codex\phronesis to my personal marketplace, preserving this checkout as the plugin source.
+```
+
+Refresh Codex, open the CLI with `codex`, enter `/plugins`, install **Phronesis** from the Personal marketplace, and start a new task. Confirm that `aristotelian-counsel` and `aristotle-works` both appear among its bundled skills. After installation, invoking `aristotelian-counsel` explicitly routes through the bundled `aristotle-works` reference skill before quoting.
+
+See the official [plugin packaging guide](https://developers.openai.com/plugins/build/plugins) for marketplace and distribution options.
+
 ## Core commands
 
 ```text
@@ -40,6 +52,7 @@ phronesis ask stoic-counsel PACKET.json
 phronesis council PACKET.json
 phronesis doctrines [SCHOOL]
 phronesis benchmark benchmarks/cases.json
+phronesis audit --root .
 ```
 
 Record a decision:
@@ -68,8 +81,10 @@ phronesis sources search "practical wisdom particulars"
 phronesis ask aristotelian-counsel decision.json
 ```
 
-Metadata must conform to `schemas/source-record.schema.json`. Ingestion refuses `verification-required` and `restricted` records.
+Metadata must conform to `schemas/source-record.schema.json`, be marked `verified` or `ingested`, and include a retrieval date. Ingestion refuses `verification-required` and `restricted` records. Retrieval revalidates the persisted rights status and SHA-256 before returning a passage.
 Counsel commands search `sources/corpus` by default; pass `--corpus-dir` to use another verified corpus.
+
+School-specific structured analysis belongs inside the counsel contract's `extensions` object; top-level fields remain stable across schools.
 
 ## Python API
 
@@ -101,6 +116,8 @@ tests/          behavior tests at public seams
 $env:PYTHONPATH = "src"
 python -m unittest discover -s tests -v
 python -m phronesis benchmark benchmarks/cases.json
+python -m phronesis benchmark benchmarks/cases.json --corpus-dir sources/corpus
+python -m phronesis audit --root .
 ```
 
 Licensed under Apache-2.0. External source texts are **not** covered by that license; see `docs/source-policy.md` and `sources/manifest.yaml`.

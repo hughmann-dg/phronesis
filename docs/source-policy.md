@@ -16,10 +16,12 @@ Do not replace layer 1 with a summary. Do not present layer 2 as a quotation. Do
 
 For every ingested text:
 
-- identify author, title, translator, edition, publication year, and source URL;
+- identify author, title, translator, edition, publication year, and source URL; when the provider does not establish a translator or publication year, record explicit `null` and explain the uncertainty in `notes` rather than guessing;
 - preserve the provider's rights statement as evidence;
 - record retrieval date and SHA-256;
 - retain original paragraph boundaries for locators;
 - exclude restricted material from repository history and distributions.
+
+Retrieval is also a gate: persisted records are revalidated, non-ingestible rights status is rejected, and the stored text must still match its recorded SHA-256.
 
 The project's Apache-2.0 license applies to project-authored code, skills, prompts, and documentation. It does not relicense external texts.

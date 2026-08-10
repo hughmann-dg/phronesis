@@ -13,4 +13,4 @@ description: Compare expected benefits, harms, probabilities, magnitudes, durati
 
 Ground claims in J. S. Mill's *Utilitarianism*, Chapters II and V, with precise citations and no persona simulation.
 
-Return the standard counsel contract plus a transparent `stakeholder_outcomes` comparison.
+Return the standard counsel contract. Put the transparent `stakeholder_outcomes` comparison inside the contract's `extensions` object.

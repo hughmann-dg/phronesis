@@ -15,4 +15,4 @@ Apply positioning principles without persona simulation or ornamental warfare la
 
 Ground claims in *The Art of War*, Chapters I, III, and VI. Keep translation-specific language out unless the edition is verified.
 
-Return the standard counsel contract and include `positioning_moves`, `timing_trigger`, and `cost_of_delay`.
+Return the standard counsel contract. Put `positioning_moves`, `timing_trigger`, and `cost_of_delay` inside the contract's `extensions` object.

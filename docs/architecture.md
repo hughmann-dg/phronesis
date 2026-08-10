@@ -30,4 +30,6 @@ flowchart LR
 
 ## Model-backed extension
 
-`Council` depends on the small `Reasoner` protocol: `counsel(packet, doctrine) -> CounselResponse`. A model adapter should receive only those two inputs, request structured output, validate it against `counsel-response.schema.json`, and attach retrieved source passages. Cross-examination and synthesis should continue to operate on validated contracts rather than free-form chat.
+`Council` depends on the small `Reasoner` protocol: `counsel(packet, doctrine) -> CounselResponse`. A model adapter receives only those two inputs, requests structured output, and attaches retrieved source passages. The Council validates school identity, option membership, confidence, required fields, declared source IDs and locators, grounding mode, and the extension container before cross-examination. School-specific fields remain nested under `extensions`.
+
+`Council.convene` assumes packet intake is complete. The total-agent workflow calls the separate `examine` seam first when objectives, terms, options, or evidence remain incomplete; a programmatic caller that has already completed intake may convene directly.

@@ -5,7 +5,7 @@ description: "Run the Phronesis Council workflow for a substantive decision: nor
 
 # The Council
 
-Use the sequence **Examine → Counsel → Contest → Decide → Review**.
+Use the sequence **Examine → Counsel → Contest → Decide → Review**. The executable `Council.convene` assumes a normalized packet is ready for deliberation; call the separate examination seam first whenever framing is incomplete.
 
 1. Normalize a Decision Packet and separate facts, assumptions, estimates, opinions, and unknowns.
 2. Use Socratic examination if the framing is incomplete.
