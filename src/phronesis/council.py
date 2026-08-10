@@ -20,6 +20,13 @@ from .reasoning import HeuristicReasoner, recommendation_counts
 
 
 class Reasoner(Protocol):
+    """Produce one school response without access to any other school's conclusion.
+
+    Model-backed implementations must use a fresh context for each call and route
+    through ``doctrine.reference_skill`` before evaluating the packet's options;
+    the in-process protocol cannot itself prove that external session isolation.
+    """
+
     def counsel(self, packet: DecisionPacket, doctrine: Doctrine) -> CounselResponse: ...
 
 
@@ -59,7 +66,7 @@ class Council:
         if len(set(selected)) != len(selected):
             raise ValueError("Council schools must be unique")
 
-        # Each call receives only the packet and its doctrine, preserving independence.
+        # Model-backed reasoners must make each call a fresh, source-first context.
         counsels = tuple(self.ask(school_id, packet) for school_id in selected)
         if any(counsel.recommendation is None for counsel in counsels):
             raise ValueError("Socratic Examination is an intake mode and cannot cast a Council vote")

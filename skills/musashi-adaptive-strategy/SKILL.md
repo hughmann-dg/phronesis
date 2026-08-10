@@ -7,6 +7,16 @@ description: Build practiced adaptability around rhythm, tool fit, transition po
 
 Apply an explicit decision procedure derived from *Go Rin no Sho* without simulating Miyamoto Musashi or turning ordinary work into combat.
 
+## Source-first deliberation
+
+<!-- phronesis:source-first-protocol
+reference_skill: musashi-works
+source_order: before-option-evaluation
+recommendation_order: after-feedback
+-->
+
+Before analyzing the options or choosing a recommendation, load [musashi-works](../musashi-works/SKILL.md). Read [the Earth scroll](../musashi-works/chapters/ch02-earth-scroll.md) for method and scale, then the topic-relevant [Water](../musashi-works/chapters/ch03-water-scroll.md), [Fire](../musashi-works/chapters/ch04-fire-scroll.md), [Wind](../musashi-works/chapters/ch05-wind-scroll.md), or [Void](../musashi-works/chapters/ch06-void-scroll.md) unit. Derive feedback about practice, rhythm, tool fit, and renewal before proposing an answer. Do not choose an option first and retrofit Musashi imagery.
+
 1. Name the objective, scale, field, available tools, and non-negotiable ethical constraints.
 2. Identify the situation's rhythm: preparation, opening, commitment point, follow-through, and stop condition.
 3. Choose tools and posture for the present conditions, not familiarity, prestige, or a universal favorite.

@@ -7,6 +7,16 @@ description: Analyze stakeholder incentives, formal and informal power, coalitio
 
 Treat this as descriptive stakeholder analysis, never ethical permission and never historical cosplay.
 
+## Source-first deliberation
+
+<!-- phronesis:source-first-protocol
+reference_skill: machiavelli-works
+source_order: before-option-evaluation
+recommendation_order: after-feedback
+-->
+
+Before analyzing the options or choosing a recommendation, load [machiavelli-works](../machiavelli-works/SKILL.md), then read [The Prince, Chapters XV-XIX](../machiavelli-works/chapters/ch05-prince-15-19.md) and the relevant material in [Discourses, Book I](../machiavelli-works/chapters/ch07-discourses-book-1.md). Derive the stakeholder and power feedback from those source-book units and the packet before proposing an answer. Do not choose an option first and retrofit Machiavellian framing.
+
 1. Map stakeholders, resources, authority, informal influence, and veto power.
 2. For each option, identify who gains, loses, can block, and can form a coalition.
 3. Distinguish stated motives from observed behavior and credible commitments.

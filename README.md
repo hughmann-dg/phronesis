@@ -8,14 +8,14 @@ It does **not** simulate famous people. A response is produced by a documented d
 
 - Decision Packets distinguish facts, assumptions, estimates, opinions, and unknowns.
 - Ten explicit doctrines are available: Socratic Examination handles non-voting intake, and the default Council convenes the other nine voting lenses.
-- The Council operates as a board of independent advisors, debates only when recommendations differ, and always red-teams its preliminary advice before final synthesis.
+- The interactive Council skill dispatches source-first counsel to isolated advisor agents, collects their recommendations before comparison, debates only when recommendations differ, and always red-teams its preliminary advice before final synthesis.
 - Every counsel response includes a philosophical basis and source locator.
 - A rights-aware local corpus can ingest and retrieve verified primary texts.
 - The decision journal records choices, confidence, predictions, outcomes, and lessons.
 - A five-domain benchmark checks validated contracts, declared citations, and verified-primary-source coverage separately.
 - The package uses only the Python standard library at runtime.
 
-The included reasoner is a transparent deterministic baseline with explicit school-specific signals and stable, order-independent tie breaking. It is useful for exercising the system, but it is not a substitute for full doctrinal deliberation. The `Reasoner` protocol in `phronesis.council` is the seam for a model-backed implementation; every response is validated before it enters conditional debate or synthesis.
+The included in-process reasoner is a transparent deterministic baseline with explicit school-specific signals and stable, order-independent tie breaking. It does not create model agents, and its optional source retrieval grounds citations rather than supplying full doctrinal deliberation. The interactive Council skill implements the isolated source-first agent workflow. For programmatic model integration, the `Reasoner` protocol in `phronesis.council` is the seam: the adapter is responsible for giving each school a fresh source-first context, and every response is validated before it enters conditional debate or synthesis.
 
 ## Install
 

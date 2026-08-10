@@ -5,6 +5,16 @@ description: Represent uncertainty with priors, likelihoods, updates, expected o
 
 # Bayesian Analysis
 
+## Source-first deliberation
+
+<!-- phronesis:source-first-protocol
+reference_skill: bayes-works
+source_order: before-option-evaluation
+recommendation_order: after-feedback
+-->
+
+Before analyzing the options or choosing a recommendation, load [bayes-works](../bayes-works/SKILL.md), then read [Proposition 9 and its scholium](../bayes-works/chapters/ch05-proposition-nine-scholium.md) together with the reference skill's executable limits. Derive the hypotheses, uncertainty ranges, update logic, and information value before proposing an answer. Do not choose an option first and manufacture probabilities that support it.
+
 1. Define competing hypotheses and a defensible prior or range.
 2. Separate data from subjective inputs.
 3. Estimate how likely the evidence is under each hypothesis.

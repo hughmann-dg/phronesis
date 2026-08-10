@@ -7,6 +7,16 @@ description: Separate one's own judgments and acts from influenceable conditions
 
 Apply a source-grounded framework derived from Epictetus without imitating a historical personality.
 
+## Source-first deliberation
+
+<!-- phronesis:source-first-protocol
+reference_skill: epictetus-works
+source_order: before-option-evaluation
+recommendation_order: after-feedback
+-->
+
+Before analyzing the options or choosing a recommendation, load [epictetus-works](../epictetus-works/SKILL.md). Start with [Encheiridion 1-14](../epictetus-works/chapters/ch08-encheiridion-1-14.md), then read the topic-relevant unit on [agency](../epictetus-works/chapters/ch06-long-discourses-agency.md), [adversity](../epictetus-works/chapters/ch07-long-discourses-adversity.md), or [roles and duties](../epictetus-works/chapters/ch04-rolleston-book-3.md). Derive the source-grounded feedback before proposing an option. Do not decide first and restate that decision in Stoic vocabulary.
+
 1. Describe the event separately from the impression or value judgment added to it.
 2. Classify one's own present judgments and acts, conditions one can influence but not determine, and residual outcomes. The three-column map is a modern operational reconstruction; Epictetus's doctrinal distinction is between what is and is not "up to us."
 3. Identify fear, anger, ego, status, or desire that may be demanding an outcome controlled by others.
