@@ -329,6 +329,9 @@ class SourceCorpusTests(unittest.TestCase):
             with self.assertRaisesRegex(ValidationError, "already exists"):
                 corpus.ingest_text("Replacement text.", metadata)
 
+            stored_text = Path(directory, "texts", "immutable-source.txt").read_text(encoding="utf-8")
+            self.assertEqual(stored_text, "Original text.")
+
 
 if __name__ == "__main__":
     unittest.main()

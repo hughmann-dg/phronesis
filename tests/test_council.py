@@ -40,6 +40,9 @@ class DoctrineTests(unittest.TestCase):
     def test_counsel_doctrines_declare_their_reference_skill_when_available(self) -> None:
         self.assertEqual(get_doctrine("aristotelian-counsel").reference_skill, "aristotle-works")
         self.assertEqual(get_doctrine("stoic-counsel").reference_skill, "epictetus-works")
+        self.assertEqual(get_doctrine("machiavellian-realism").reference_skill, "machiavelli-works")
+        self.assertEqual(get_doctrine("clausewitzian-strategy").reference_skill, "clausewitz-works")
+        self.assertEqual(get_doctrine("humean-skepticism").reference_skill, "hume-works")
 
 
 class CouncilTests(unittest.TestCase):

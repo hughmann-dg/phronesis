@@ -249,6 +249,7 @@ class SourceCorpus:
         text_target = self.texts_dir / f"{record.id}.txt"
         record_target = self.records_dir / f"{record.id}.json"
         reserved = False
+        text_written = False
         committed = False
         try:
             try:
@@ -261,13 +262,14 @@ class SourceCorpus:
             if text_target.exists():
                 raise ValidationError(f"source {record.id} already exists; use a new immutable source id")
             atomic_write_text(text_target, text)
+            text_written = True
             atomic_write_text(
                 record_target,
                 json.dumps(asdict(record), indent=2, ensure_ascii=False) + "\n",
             )
             committed = True
         except Exception:
-            if text_target.is_file() and not committed:
+            if text_written and text_target.is_file() and not committed:
                 text_target.unlink()
             raise
         finally:

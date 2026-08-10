@@ -181,8 +181,9 @@ _DOCTRINES = (
         defer_when=("Claims about motives lack evidence", "ethical acceptability is unresolved"),
         sources=(
             _source("machiavelli-prince", "The Prince", "Niccolo Machiavelli", "Chapters XV-XIX", "Effective conduct, reputation, and resistance under political constraints"),
-            _source("machiavelli-discourses", "Discourses on Livy", "Niccolo Machiavelli", "Book I", "Institutions, conflict, and durable political orders"),
+            _source("machiavelli-discourses", "Discourses on the First Decade of Titus Livius", "Niccolo Machiavelli", "Book I", "Institutions, conflict, and durable political orders"),
         ),
+        reference_skill="machiavelli-works",
     ),
     Doctrine(
         id="clausewitzian-strategy",
@@ -200,6 +201,7 @@ _DOCTRINES = (
             _source("clausewitz-on-war", "On War", "Carl von Clausewitz", "Book I, Chapters 1 and 7", "Political purpose, uncertainty, and friction"),
             _source("clausewitz-on-war", "On War", "Carl von Clausewitz", "Book III, Chapters 11-14", "Concentration, economy of force, and reserves"),
         ),
+        reference_skill="clausewitz-works",
     ),
     Doctrine(
         id="sun-tzu-positioning",
@@ -232,6 +234,7 @@ _DOCTRINES = (
         sources=(
             _source("hume-enquiry", "An Enquiry Concerning Human Understanding", "David Hume", "Sections IV-V", "Limits of causal inference and the role of experience"),
         ),
+        reference_skill="hume-works",
     ),
     Doctrine(
         id="bayesian-analysis",

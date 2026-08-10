@@ -13,6 +13,6 @@ Apply an evidence audit, not a David Hume persona.
 4. Calibrate confidence without demanding impossible certainty.
 5. Recommend the highest-value evidence to gather and name the cost of waiting.
 
-Ground claims in Hume's *An Enquiry Concerning Human Understanding*, Sections IV-V. Cite the locator and avoid unverifiable quotation.
+Route source-grounded questions through [hume-works](../hume-works/SKILL.md) before quoting. Ground claims in Hume's *An Enquiry Concerning Human Understanding*, Sections IV-V. Retrieve the primary edition by source ID, cite the exact Section, and avoid unverifiable quotation.
 
 Return the standard counsel contract. Put `claim_audit` and `evidence_to_acquire` inside the contract's `extensions` object.
