@@ -15,7 +15,7 @@ class DoctrineTests(unittest.TestCase):
     def test_initial_library_is_explicit_and_source_grounded(self) -> None:
         doctrines = list_doctrines()
 
-        self.assertEqual(len(doctrines), 9)
+        self.assertEqual(len(doctrines), 10)
         clausewitz = get_doctrine("clausewitzian-strategy")
         self.assertIn("friction", " ".join(clausewitz.principles).lower())
         self.assertEqual(clausewitz.sources[0].title, "On War")
@@ -38,11 +38,16 @@ class DoctrineTests(unittest.TestCase):
         self.assertIn("Encheiridion 1", stoic.sources[0].locator)
 
     def test_counsel_doctrines_declare_their_reference_skill_when_available(self) -> None:
+        self.assertEqual(get_doctrine("socratic-examination").reference_skill, "plato-works")
         self.assertEqual(get_doctrine("aristotelian-counsel").reference_skill, "aristotle-works")
         self.assertEqual(get_doctrine("stoic-counsel").reference_skill, "epictetus-works")
         self.assertEqual(get_doctrine("machiavellian-realism").reference_skill, "machiavelli-works")
         self.assertEqual(get_doctrine("clausewitzian-strategy").reference_skill, "clausewitz-works")
+        self.assertEqual(get_doctrine("sun-tzu-positioning").reference_skill, "sun-tzu-works")
+        self.assertEqual(get_doctrine("musashi-adaptive-strategy").reference_skill, "musashi-works")
         self.assertEqual(get_doctrine("humean-skepticism").reference_skill, "hume-works")
+        self.assertEqual(get_doctrine("bayesian-analysis").reference_skill, "bayes-works")
+        self.assertEqual(get_doctrine("consequentialist-analysis").reference_skill, "mill-works")
 
 
 class CouncilTests(unittest.TestCase):
@@ -52,9 +57,28 @@ class CouncilTests(unittest.TestCase):
     def test_council_runs_counsel_contest_red_team_and_decision(self) -> None:
         result = Council().convene(self.packet)
 
-        self.assertEqual(len(result.counsels), 5)
+        expected_schools = {
+            "aristotelian-counsel",
+            "stoic-counsel",
+            "machiavellian-realism",
+            "clausewitzian-strategy",
+            "sun-tzu-positioning",
+            "musashi-adaptive-strategy",
+            "humean-skepticism",
+            "bayesian-analysis",
+            "consequentialist-analysis",
+        }
+        self.assertEqual({counsel.school_id for counsel in result.counsels}, expected_schools)
         self.assertTrue(all(counsel.philosophical_basis for counsel in result.counsels))
         self.assertTrue(result.cross_examinations)
+        self.assertEqual(
+            {challenge.critic_school_id for challenge in result.cross_examinations},
+            expected_schools,
+        )
+        self.assertEqual(
+            {challenge.target_school_id for challenge in result.cross_examinations},
+            expected_schools,
+        )
         self.assertNotIn("red-team", result.synthesis.supporting_schools)
         self.assertIn(result.synthesis.recommendation, self.packet.options)
         self.assertEqual(result.synthesis.recommendation, "incremental migration")
@@ -165,6 +189,26 @@ class CouncilTests(unittest.TestCase):
         self.assertEqual(counsels["humean-skepticism"].recommendation, "run a measurement pilot")
         self.assertEqual(counsels["machiavellian-realism"].recommendation, "negotiate a stakeholder coalition")
         self.assertGreater(len({c.recommendation for c in counsels.values()}), 1)
+
+    def test_musashi_baseline_prefers_practiced_adaptation_over_repetition(self) -> None:
+        packet = DecisionPacket.from_dict(
+            {
+                "decision": "How should the team handle a difficult system transition?",
+                "objective": "Complete the transition without repeating a failed cutover",
+                "options": [
+                    "repeat the same cutover plan",
+                    "rehearse a staged transition and switch on a failure trigger",
+                    "commit immediately",
+                ],
+                "constraints": ["The prior cutover failed"],
+                "unknowns": ["Rollback time under load"],
+            }
+        )
+
+        counsel = Council().ask("musashi-adaptive-strategy", packet)
+
+        self.assertEqual(counsel.recommendation, "rehearse a staged transition and switch on a failure trigger")
+        self.assertEqual(counsel.philosophical_basis[0].source_id, "musashi-book-five-rings")
 
     def test_red_team_reduces_confidence_without_changing_the_preliminary_winner(self) -> None:
         class CloseSplitReasoner:

@@ -13,6 +13,6 @@ Apply positioning principles without persona simulation or ornamental warfare la
 4. Compare acting now with waiting for a genuinely better position.
 5. Name the cost of delay and the trigger for commitment.
 
-Ground claims in *The Art of War*, Chapters I, III, and VI. Keep translation-specific language out unless the edition is verified.
+Route source-grounded questions through [sun-tzu-works](../sun-tzu-works/SKILL.md) before quoting. Ground claims in *Sun Tzu on the Art of War*, Chapters I, III, and VI. Retrieve the primary edition by source ID, cite chapter and numbered-paragraph locators, distinguish Lionel Giles's commentary from Sun Tzu's text, and do not invent quotations.
 
 Return the standard counsel contract. Put `positioning_moves`, `timing_trigger`, and `cost_of_delay` inside the contract's `extensions` object.

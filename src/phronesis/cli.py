@@ -94,8 +94,11 @@ def _load_packet(path: str) -> DecisionPacket:
 
 
 def _emit(payload: Any, stream: TextIO) -> None:
-    json.dump(payload, stream, indent=2, ensure_ascii=False)
-    stream.write("\n")
+    rendered = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+    try:
+        stream.write(rendered)
+    except UnicodeEncodeError:
+        stream.write(json.dumps(payload, indent=2, ensure_ascii=True) + "\n")
 
 
 def main(

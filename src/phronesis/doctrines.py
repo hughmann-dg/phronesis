@@ -78,6 +78,7 @@ _DOCTRINES = (
             _source("plato-dialogues", "Apology", "Plato", "21d-23b", "Awareness of ignorance and examination of claims"),
             _source("plato-dialogues", "Gorgias", "Plato", "454c-461b", "Distinguishing knowledge from persuasion"),
         ),
+        reference_skill="plato-works",
     ),
     Doctrine(
         id="aristotelian-counsel",
@@ -216,8 +217,77 @@ _DOCTRINES = (
         useful_when=("Timing and positioning are malleable", "direct action is costly"),
         defer_when=("Delay compounds harm", "transparency is ethically required"),
         sources=(
-            _source("sun-tzu-art-of-war", "The Art of War", "Sun Tzu", "Chapters I, III, and VI", "Assessment, winning without direct contest, and shaping strengths and weaknesses"),
+            _source("sun-tzu-art-of-war", "Sun Tzu on the Art of War", "Sun Tzu", "Chapters I, III, and VI", "Assessment, winning without direct contest, and shaping strengths and weaknesses"),
         ),
+        reference_skill="sun-tzu-works",
+    ),
+    Doctrine(
+        id="musashi-adaptive-strategy",
+        name="Musashi Adaptive Strategy",
+        primary_question="Which rhythm, posture, and tool fit this situation, and what signal should make us change?",
+        primary_questions=(
+            "What must be practiced before judgment under pressure is trustworthy?",
+            "Which timing or transition point matters most?",
+            "Are we attached to a familiar tool, stance, or sequence after it has stopped working?",
+            "What observable signal should trigger renewal, commitment, or withdrawal?",
+        ),
+        principles=(
+            "Train judgment through repeated practice; written instruction alone is insufficient.",
+            "Match timing, posture, and tools to the actual situation instead of treating one form as universally best.",
+            "Study both small and large scales before transferring a pattern between them.",
+            "When an approach is deadlocked or has failed repeatedly, detach from it and renew the method.",
+            "Commit at a recognized crossing point rather than drifting through a costly transition.",
+        ),
+        procedure=(
+            "Name the objective, scale, field, and available tools.",
+            "Identify the situation's rhythm, transition points, and observable timing signals.",
+            "Choose a posture and tool for fit rather than familiarity or prestige.",
+            "Rehearse the choice under representative pressure and compare the small-scale lesson with the larger system.",
+            "Set a renewal trigger for deadlock, repeated failure, or changed conditions.",
+            "At the crossing point, commit, switch, or withdraw deliberately.",
+        ),
+        evidence_preferences=(
+            "Observed rehearsal and practice results",
+            "timing and transition signals",
+            "tool-to-task fit",
+            "behavior under representative pressure",
+            "evidence of deadlock or repeated failure",
+        ),
+        failure_modes=(
+            "Romanticizing combat language",
+            "using adaptability as an excuse for improvisation without practice",
+            "changing methods before enough evidence exists",
+            "persisting with a familiar technique after its conditions disappear",
+            "treating no fixed stance as no plan or no constraint",
+        ),
+        blind_spots=(
+            "Rights and moral legitimacy",
+            "non-adversarial cooperation",
+            "institutional and distributional effects",
+            "probability calibration",
+        ),
+        useful_when=(
+            "Execution depends on practiced judgment and timing",
+            "a transition has a recognizable point of commitment",
+            "the team is stuck in repetition or attachment to one method",
+            "tools or tactics must change with conditions",
+        ),
+        defer_when=(
+            "Violence, coercion, or illegality is proposed",
+            "rights or duties determine the answer before tactical fit",
+            "specialist safety, medical, or legal assessment is required",
+            "the problem is cooperative and adversarial framing would damage trust",
+        ),
+        sources=(
+            _source(
+                "musashi-book-five-rings",
+                "Go Rin no Sho (The Book of Five Rings)",
+                "Miyamoto Musashi",
+                "Earth scroll, 'Rhythm in Strategy'; Water scroll, introduction and 'Attitude-No Attitude'; Fire scroll, 'Crossing at a Ford,' 'Mountain-Sea Change,' and 'Renewal'; Wind scroll; Void scroll",
+                "Practice, timing, situational form, deliberate transition, renewal, and the limits of fixed methods",
+            ),
+        ),
+        reference_skill="musashi-works",
     ),
     Doctrine(
         id="humean-skepticism",
@@ -251,6 +321,7 @@ _DOCTRINES = (
         sources=(
             _source("bayes-essay", "An Essay towards solving a Problem in the Doctrine of Chances", "Thomas Bayes", "Proposition 9 and scholium", "Updating probability from observed evidence"),
         ),
+        reference_skill="bayes-works",
     ),
     Doctrine(
         id="consequentialist-analysis",
@@ -267,6 +338,7 @@ _DOCTRINES = (
         sources=(
             _source("mill-utilitarianism", "Utilitarianism", "John Stuart Mill", "Chapters II and V", "Consequences, qualitative goods, justice, and utility"),
         ),
+        reference_skill="mill-works",
     ),
 )
 
@@ -290,5 +362,9 @@ DEFAULT_COUNCIL = (
     "stoic-counsel",
     "machiavellian-realism",
     "clausewitzian-strategy",
+    "sun-tzu-positioning",
+    "musashi-adaptive-strategy",
     "humean-skepticism",
+    "bayesian-analysis",
+    "consequentialist-analysis",
 )

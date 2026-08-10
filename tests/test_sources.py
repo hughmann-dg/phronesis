@@ -40,6 +40,31 @@ class SourceCorpusTests(unittest.TestCase):
             stored = Path(directory, "texts", "example-ethics.txt").read_bytes()
             self.assertEqual(hashlib.sha256(stored).hexdigest(), record.sha256)
 
+    def test_japanese_primary_text_can_be_retrieved_without_english_annotations(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            corpus = SourceCorpus(directory)
+            corpus.ingest_text(
+                "兵法の拍子を能く鍛錬すべし。",
+                {
+                    "id": "japanese-strategy",
+                    "title": "Japanese Strategy",
+                    "author": "Old Author",
+                    "translator": None,
+                    "edition": "Public-domain Japanese edition",
+                    "publication_year": 1909,
+                    "source_url": "https://example.test/japanese",
+                    "rights_status": "public-domain-verified",
+                    "rights_evidence": "Published in 1909; test fixture.",
+                    "retrieved_date": "2026-08-10",
+                    "ingestion_status": "verified",
+                },
+            )
+
+            results = corpus.search("兵法 拍子 鍛錬", top_k=1)
+
+            self.assertEqual(results[0].source_id, "japanese-strategy")
+            self.assertIn("拍子", results[0].text)
+
     def test_unverified_translation_cannot_be_ingested(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             corpus = SourceCorpus(directory)

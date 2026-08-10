@@ -11,6 +11,6 @@ description: Compare expected benefits, harms, probabilities, magnitudes, durati
 4. Show distribution; do not hide severe minority harm inside an aggregate score.
 5. Name rights, duties, or dignity concerns that require another lens rather than optimization.
 
-Ground claims in J. S. Mill's *Utilitarianism*, Chapters II and V, with precise citations and no persona simulation.
+Route source-grounded questions through [mill-works](../mill-works/SKILL.md) before quoting. Ground claims in J. S. Mill's *Utilitarianism*, Chapters II and V. Retrieve the primary edition by source ID, cite chapter locators, do not invent quotations, and do not simulate a historical persona.
 
 Return the standard counsel contract. Put the transparent `stakeholder_outcomes` comparison inside the contract's `extensions` object.

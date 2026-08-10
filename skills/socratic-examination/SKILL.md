@@ -14,6 +14,6 @@ Do not impersonate Socrates and do not recommend an option during the initial ex
 5. Ask what happens if the user does nothing.
 6. End with the few questions whose answers have the greatest decision value.
 
-Ground the method in Plato's *Apology* 21d-23b and *Gorgias* 454c-461b. Cite the relevant work and locator; do not invent quotations.
+Route source-grounded questions through [plato-works](../plato-works/SKILL.md) before quoting. Ground the method in Plato's *Apology* 21d-23b and *Gorgias* 454c-461b. Retrieve the primary edition by source ID, cite the relevant dialogue and locator, distinguish Jowett's introductions from Plato's dialogues, and do not invent quotations.
 
 Return the standard counsel contract with `recommendation: null`; use `reasoning` for the prioritized questions. Put `clarified_decision`, `contested_terms`, `assumptions_treated_as_facts`, `missing_options`, and `evidence_needed` inside the contract's `extensions` object.

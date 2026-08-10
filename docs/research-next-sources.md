@@ -3,6 +3,8 @@
 Research date: 2026-08-09
 Rights jurisdiction: United States
 
+Acquisition update: all five recommended records were subsequently acquired and ingested on 2026-08-09. The manifest and ignored local corpus contain the retrieval date and SHA-256 of the exact ingested text. Follow-on research for Sun Tzu, Mill, Bayes, and Musashi is recorded in [research-follow-on-sources.md](research-follow-on-sources.md); the Musashi candidate was promoted from gated to an ingested Japanese source on 2026-08-10.
+
 ## Recommendation
 
 Use a two-tier next set:
@@ -12,7 +14,7 @@ Use a two-tier next set:
 
 Acquire all five in the same pass if capacity permits. If “next set” must be limited, the four-record runtime-priority core has the greatest immediate effect because it completes primary-source coverage for every school in `DEFAULT_COUNCIL`. This selection follows the [manifest](../sources/manifest.yaml), current [doctrine definitions](../src/phronesis/doctrines.py), the [source policy](source-policy.md), and the [roadmap](roadmap.md).
 
-This research note is a source-acquisition recommendation only; its preparation did not change a manifest record or download or ingest a text. At acquisition time, record the actual retrieval date and SHA-256 of the exact bytes retrieved, then run the repository gates.
+This document began as a source-acquisition recommendation. The later acquisition pass changed the manifest and local ignored corpus; the manifest now records the actual retrieval date and SHA-256 for each acquired source.
 
 ## 1. `plato-dialogues`
 
@@ -153,7 +155,7 @@ Suggested manifest values:
 
 - `seneca-moral-letters`: defer. It appears before Machiavelli in manifest order, but no current doctrine cites it. More importantly, Project Gutenberg's Seneca catalog does not presently list *Moral Letters*, while Standard Ebooks labels its Gummere edition as still in production and says it is not yet in the catalog.[^seneca-gutenberg][^seneca-standard] This record remains `verification-required` until a complete, downloadable, edition-specific provider record exists.
 - `marcus-aurelius-meditations`: defer. It also is not cited by a current doctrine, and Stoic Counsel already routes through three ingested Epictetus sources. If this record is promoted later, Gutenberg eBook #55317 is a clean candidate: George W. Chrystal's 1902 *The Meditations of the Emperor Marcus Aurelius Antoninus*, based on the Foulis translation of 1742, with explicit US public-domain status.[^marcus-catalog][^marcus-text]
-- `sun-tzu-art-of-war`, `mill-utilitarianism`, and `bayes-essay`: defer to the batch for non-default-council schools. They are doctrinal dependencies, but occur after the Machiavelli records and do not unblock a default-council school.
+- `sun-tzu-art-of-war`, `mill-utilitarianism`, and `bayes-essay`: subsequently acquired in the follow-on batch documented in [research-follow-on-sources.md](research-follow-on-sources.md).
 
 Strict manifest order would place Sun Tzu before Clausewitz and Hume. The recommendation intentionally prioritizes completing the default council after resolving the first uncited-book detour (Seneca and Marcus). If catalog order is treated as inviolable rather than advisory, stop the batch after the two Machiavelli records and make Sun Tzu the first record in the following batch.
 

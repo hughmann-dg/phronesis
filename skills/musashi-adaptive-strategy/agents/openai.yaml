@@ -1,0 +1,4 @@
+interface:
+  display_name: "Musashi Adaptive Strategy"
+  short_description: "Practice, time, and renew an approach"
+  default_prompt: "Use $musashi-adaptive-strategy to test the rhythm, tool fit, crossing point, and renewal trigger in this decision."

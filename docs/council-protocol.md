@@ -6,7 +6,7 @@ Normalize the packet and use the separate Socratic Examination seam when objecti
 
 ## Counsel
 
-Select differentiated schools. Each school receives only the same Decision Packet and its own doctrine. It returns the standard counsel contract before seeing other conclusions. The default initial Council contains Aristotelian, Stoic, Machiavellian, Clausewitzian, and Humean lenses.
+Select differentiated schools. Each school receives only the same Decision Packet and its own doctrine. It returns the standard counsel contract before seeing other conclusions. The default Council contains all nine voting lenses: Aristotelian, Stoic, Machiavellian, Clausewitzian, Sun Tzu, Musashi, Humean, Bayesian, and Consequentialist. Socratic Examination remains the non-voting intake stage.
 
 ## Contest
 

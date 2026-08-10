@@ -90,9 +90,13 @@ class Council:
         specs = (
             ("machiavellian-realism", "aristotelian-counsel", "What incentive makes the affected stakeholders cooperate?"),
             ("humean-skepticism", "machiavellian-realism", "What observed evidence supports the claimed incentive structure?"),
-            ("clausewitzian-strategy", "humean-skepticism", "What is the cost of gathering more evidence while execution windows close?"),
-            ("stoic-counsel", "clausewitzian-strategy", "Which execution concerns are outside our control, and which merely lack preparation?"),
+            ("bayesian-analysis", "humean-skepticism", "Which observation would update confidence most, and is it worth obtaining?"),
+            ("clausewitzian-strategy", "bayesian-analysis", "What is the cost of gathering more evidence while execution windows close?"),
+            ("sun-tzu-positioning", "clausewitzian-strategy", "Can a better position reduce the need for costly direct execution?"),
+            ("musashi-adaptive-strategy", "sun-tzu-positioning", "What practiced signal distinguishes a real opening from wishful timing?"),
+            ("stoic-counsel", "musashi-adaptive-strategy", "Which execution concerns are influenceable through preparation, and which are residual outcomes?"),
             ("consequentialist-analysis", "stoic-counsel", "Who bears harm even if the decision-maker acts with discipline?"),
+            ("aristotelian-counsel", "consequentialist-analysis", "Which human goods or relationships might an aggregate comparison fail to represent?"),
         )
         for critic, target, challenge in specs:
             if critic in by_id and target in by_id:

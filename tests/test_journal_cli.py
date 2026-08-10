@@ -1,11 +1,12 @@
 import io
 import json
 import os
+from io import BytesIO, TextIOWrapper
 from pathlib import Path
 import tempfile
 import unittest
 
-from phronesis.cli import main
+from phronesis.cli import _emit, main
 from phronesis.council import Council
 from phronesis.journal import DecisionJournal
 from phronesis.models import DecisionPacket, ValidationError
@@ -85,6 +86,16 @@ class JournalTests(unittest.TestCase):
 
 
 class CliTests(unittest.TestCase):
+    def test_json_output_falls_back_to_unicode_escapes_on_ascii_streams(self) -> None:
+        buffer = BytesIO()
+        stream = TextIOWrapper(buffer, encoding="ascii")
+
+        _emit({"source_excerpt": "兵法の拍子"}, stream)
+        stream.flush()
+
+        payload = json.loads(buffer.getvalue().decode("ascii"))
+        self.assertEqual(payload["source_excerpt"], "兵法の拍子")
+
     def test_council_command_emits_machine_readable_result(self) -> None:
         stdout = io.StringIO()
         stderr = io.StringIO()

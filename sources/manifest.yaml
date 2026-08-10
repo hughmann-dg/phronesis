@@ -93,16 +93,18 @@ sources:
     sha256: "1625471acb97dd0781fa5fdd604e597e64891b04c1adc7f7cd34a51e4ebcbd24"
     notes: "Downloaded title page identifies the 1887 edition. Rights verification is scoped to the United States."
   - id: plato-dialogues
-    title: Dialogues of Plato
+    title: "The Dialogues of Plato in Five Volumes, Vol. 2 (of 5): Translated into English with Analyses and Introductions"
     author: Plato
-    translator: null
-    edition: "Candidate edition; verification required"
-    publication_year: null
-    source_url: "https://www.gutenberg.org/ebooks/search/?query=Dialogues+Plato"
-    rights_status: verification-required
-    rights_evidence: null
-    retrieved_date: null
-    ingestion_status: candidate
+    translator: Benjamin Jowett
+    edition: "Oxford University Press, American Branch, third edition, revised and corrected throughout, 1892; Project Gutenberg eBook #76464"
+    publication_year: 1892
+    source_url: "https://www.gutenberg.org/ebooks/76464"
+    rights_status: public-domain-verified
+    rights_evidence: "Project Gutenberg's edition-specific catalog record states: Copyright: Public domain in the USA."
+    retrieved_date: "2026-08-09"
+    ingestion_status: ingested
+    sha256: "88dc6933105c157636484004054411e485e950c9df694eeb35a92073c43c2db4"
+    notes: "Volume II contains Meno, Euthyphro, Apology, Crito, Phaedo, Gorgias, and appendices. The transcription preserves marginal page-number guides, but letter subdivisions are not always machine-readable; verify passage spans against the rendered edition before quoting. Rights verification is scoped to the United States."
   - id: epictetus-discourses-enchiridion
     title: A Selection from the Discourses of Epictetus with the Encheiridion
     author: Epictetus
@@ -164,6 +166,19 @@ sources:
     rights_evidence: null
     retrieved_date: null
     ingestion_status: candidate
+  - id: musashi-book-five-rings
+    title: "Go Rin no Sho (The Book of Five Rings)"
+    author: Miyamoto Musashi
+    translator: null
+    edition: "Chapter 9 of Miyamoto Musashi, edited by the Miyamoto Musashi Iseki Kenshokai, Kinkodo Shoseki, Tokyo, 1909; original-language transcription keyed to that parent edition"
+    publication_year: 1909
+    source_url: "https://www.koten.net/gorin/"
+    rights_status: public-domain-verified
+    rights_evidence: "Koten.net identifies the 1909 Kinkodo volume as its parent text and records the copyrights of Musashi and the parent edition's editors as expired; the National Diet Library record for that exact 1909 volume separately marks its copyright information 'pdm' and makes the scan publicly accessible."
+    retrieved_date: "2026-08-10"
+    ingestion_status: ingested
+    sha256: "53fbf87e67dc97b5d71577a0e570e5559e4b555b74026219ffbd71985c5c0f06"
+    notes: "Japanese source text only; no modern English translation is ingested. The local ignored corpus was assembled from Koten.net's 89 original-text sections. Koten.net reports correcting obvious copying errors and consulting another Japanese edition, so exact quotations must be checked against the 1909 NDL scan (DOI 10.11501/992019). English material in project skills is labeled synthesis rather than translation. Rights verification is scoped to the United States."
   - id: machiavelli-prince
     title: The Prince
     author: Niccolo Machiavelli
@@ -191,16 +206,18 @@ sources:
     sha256: "0a143ae9470353c28b8127963210ad23d7a12fb270d3c950f20a4b050d9c982d"
     notes: "Downloaded title page identifies the translator, publisher, place, and year. Rights verification is scoped to the United States."
   - id: sun-tzu-art-of-war
-    title: The Art of War
+    title: "Sun Tzŭ on the Art of War: The Oldest Military Treatise in the World"
     author: Sun Tzu
-    translator: null
-    edition: "Candidate edition; verification required"
-    publication_year: null
-    source_url: "https://www.gutenberg.org/ebooks/search/?query=Sun+Tzu+Art+of+War"
-    rights_status: verification-required
-    rights_evidence: null
-    retrieved_date: null
-    ingestion_status: candidate
+    translator: Lionel Giles
+    edition: "Luzac & Co., London, 1910; complete English translation with introduction and critical notes; Project Gutenberg eBook #66706"
+    publication_year: 1910
+    source_url: "https://www.gutenberg.org/ebooks/66706"
+    rights_status: public-domain-verified
+    rights_evidence: "Project Gutenberg's edition-specific catalog record states: Copyright: Public domain in the USA."
+    retrieved_date: "2026-08-09"
+    ingestion_status: ingested
+    sha256: "aef1c9e8964749bdfe495e59b3d10e7b4859edb328203753192bc8cf4da4a455"
+    notes: "The edition contains Lionel Giles's extensive introduction, Chinese text, translation, and critical commentary; editorial commentary must not be attributed to Sun Tzu. Rights verification is scoped to the United States."
   - id: clausewitz-on-war
     title: On War
     author: Carl von Clausewitz
@@ -231,21 +248,25 @@ sources:
     title: Utilitarianism
     author: John Stuart Mill
     translator: null
-    edition: "Candidate edition; verification required"
-    publication_year: null
-    source_url: "https://www.gutenberg.org/ebooks/search/?query=Mill+Utilitarianism"
-    rights_status: verification-required
-    rights_evidence: null
-    retrieved_date: null
-    ingestion_status: candidate
+    edition: "Longmans, Green, and Co., London, seventh edition, 1879; Project Gutenberg eBook #11224"
+    publication_year: 1879
+    source_url: "https://www.gutenberg.org/ebooks/11224"
+    rights_status: public-domain-verified
+    rights_evidence: "Project Gutenberg's edition-specific catalog record states: Copyright: Public domain in the USA."
+    retrieved_date: "2026-08-09"
+    ingestion_status: ingested
+    sha256: "581a9fb602e74013e1f638db64e7f3f88ba2bad2742120f62a77a78aed3cd2f2"
+    notes: "The downloaded title page identifies the seventh edition, London publisher, and 1879 publication year. Rights verification is scoped to the United States."
   - id: bayes-essay
     title: An Essay towards solving a Problem in the Doctrine of Chances
     author: Thomas Bayes
     translator: null
-    edition: "Candidate edition; verification required"
-    publication_year: null
-    source_url: "https://www.gutenberg.org/ebooks/search/?query=Thomas+Bayes+Doctrine+of+Chances"
-    rights_status: verification-required
-    rights_evidence: null
-    retrieved_date: null
-    ingestion_status: candidate
+    edition: "Philosophical Transactions of the Royal Society of London, volume 53 (1763), article LII, pages 370-418; communicated by Richard Price; Internet Archive scan and provider OCR, item paper-doi-10_1098_rstl_1763_0053"
+    publication_year: 1763
+    source_url: "https://commons.wikimedia.org/wiki/File:An_Essay_towards_Solving_a_Problem_in_the_Doctrine_of_Chances._By_the_Late_Rev._Mr._Bayes,_F._R._S._Communicated_by_Mr._Price,_in_a_Letter_to_John_Canton,_A._M._F._R._S._(IA_paper-doi-10_1098_rstl_1763_0053).pdf"
+    rights_status: public-domain-verified
+    rights_evidence: "Wikimedia Commons identifies the 1763 Royal Society scan as public domain in the United States and free of known copyright restrictions."
+    retrieved_date: "2026-08-09"
+    ingestion_status: ingested
+    sha256: "84555713ec184e498a5b9984d6024d816bb7ced1656300790951b855b036de04"
+    notes: "The ingested artifact is the Internet Archive provider OCR associated with the cited scan. It preserves original pagination imperfectly, includes long-s OCR errors and adjacent page matter, and is unsuitable for unverified quotation or formula transcription; check the scan for exact text and mathematical notation. Rights verification is scoped to the United States."

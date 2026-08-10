@@ -7,7 +7,7 @@ It does **not** simulate famous people. A response is produced by a documented d
 ## What works
 
 - Decision Packets distinguish facts, assumptions, estimates, opinions, and unknowns.
-- Nine explicit doctrines are available; the default Council uses Aristotle, Stoic, Machiavellian, Clausewitzian, and Humean lenses.
+- Ten explicit doctrines are available: Socratic Examination handles non-voting intake, and the default Council convenes the other nine voting lenses.
 - The Council runs independent counsel, cross-examination, a non-voting red team, and arbiter synthesis.
 - Every counsel response includes a philosophical basis and source locator.
 - A rights-aware local corpus can ingest and retrieve verified primary texts.

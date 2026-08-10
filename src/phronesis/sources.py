@@ -365,4 +365,9 @@ class SourceCorpus:
         return tuple(sorted(candidates, key=lambda item: (-item.score, item.source_id, item.locator))[:top_k])
 
 def _tokens(text: str) -> set[str]:
-    return set(re.findall(r"[a-z0-9]+", text.casefold()))
+    normalized = text.casefold()
+    tokens = set(re.findall(r"[a-z0-9]+", normalized))
+    cjk = re.findall(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff々〆ヵヶ]", normalized)
+    tokens.update(cjk)
+    tokens.update("".join(cjk[index : index + 2]) for index in range(len(cjk) - 1))
+    return tokens

@@ -30,6 +30,8 @@ _DIRECT_AGENCY = {"act", "adopt", "commit", "communicate", "decide", "mandate", 
 _EXECUTION_ROBUSTNESS = {"fallback", "incremental", "phase", "phased", "reserve", "rollback", "stage"}
 _HUMAN_ENDS = {"fair", "legitimate", "sustainable", "trust", "worthy"}
 _HARM_REDUCTION = {"protect", "safe", "safety", "welfare"}
+_PRACTICE_AND_RENEWAL = {"adapt", "change", "drill", "practice", "rehearsal", "rehearse", "renew", "switch", "train", "trigger"}
+_RIGID_REPETITION = {"fixed", "repeat", "same"}
 
 
 @dataclass(frozen=True)
@@ -76,6 +78,13 @@ _SCHOOL_POLICIES = {
         0,
         "{recommendation} improves information and position before an irreversible commitment.",
         "Waiting to improve position may allow the current problem to compound",
+    ),
+    "musashi-adaptive-strategy": _SchoolPolicy(
+        0.39,
+        "context",
+        0,
+        "{recommendation} builds practiced judgment, fits the method to present conditions, and preserves a trigger to renew the approach.",
+        "A familiar rhythm or technique may be repeated after the conditions that made it useful have disappeared",
     ),
     "humean-skepticism": _SchoolPolicy(
         0.36,
@@ -244,11 +253,12 @@ class HeuristicReasoner:
     def _basis(self, doctrine: Doctrine, application: str) -> PhilosophicalBasis:
         source = doctrine.sources[0]
         if self.corpus is not None:
-            query = (
-                "in our power opinion desire aversion acts body property reputation offices"
-                if doctrine.id == "stoic-counsel"
-                else f"{doctrine.principles[0]} {doctrine.primary_question}"
-            )
+            if doctrine.id == "stoic-counsel":
+                query = "in our power opinion desire aversion acts body property reputation offices"
+            elif doctrine.id == "musashi-adaptive-strategy":
+                query = "兵法 拍子 稽古"
+            else:
+                query = f"{doctrine.principles[0]} {doctrine.primary_question}"
             passages = self.corpus.search(
                 query,
                 top_k=1,
@@ -314,6 +324,8 @@ def _doctrine_adjustment(
         return len(option_tokens & _EXECUTION_ROBUSTNESS) * 0.14
     if school_id == "sun-tzu-positioning":
         return len(option_tokens & (_ADAPTIVE | _COALITION_BUILDING)) * 0.08
+    if school_id == "musashi-adaptive-strategy":
+        return len(option_tokens & _PRACTICE_AND_RENEWAL) * 0.1 - len(option_tokens & _RIGID_REPETITION) * 0.12
     if school_id in {"humean-skepticism", "bayesian-analysis"}:
         return len(option_tokens & _EVIDENCE_GENERATING) * (0.16 if uncertainty else 0.05)
     if school_id == "consequentialist-analysis":

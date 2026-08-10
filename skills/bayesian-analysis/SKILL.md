@@ -11,6 +11,6 @@ description: Represent uncertainty with priors, likelihoods, updates, expected o
 4. Update confidence and show sensitivity to uncertain inputs.
 5. Compare expected outcomes and the value and cost of further information.
 
-Never launder guesses through precise numbers. Use ranges when inputs do not justify point estimates. Ground the conceptual basis in Thomas Bayes's essay on the doctrine of chances, Proposition 9 and its scholium.
+Never launder guesses through precise numbers. Use ranges when inputs do not justify point estimates. Route source-grounded questions through [bayes-works](../bayes-works/SKILL.md) before quoting. Ground the conceptual basis in Bayes's *Essay*, Proposition 9 and its scholium. Retrieve the primary scan/OCR record by source ID, cite proposition and original-page locators, verify formulas against the scan, and do not invent quotations.
 
 Return the standard counsel contract. Put `priors`, `updates`, `sensitivity`, and `information_value` inside the contract's `extensions` object. Explain calculations plainly.

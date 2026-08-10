@@ -11,8 +11,8 @@ class AlignmentTests(unittest.TestCase):
         report = audit_repository(Path("."))
 
         self.assertEqual(report["errors"], [], report)
-        self.assertEqual(report["doctrine_count"], 9)
-        self.assertEqual(report["manifest_source_count"], 20)
+        self.assertEqual(report["doctrine_count"], 10)
+        self.assertEqual(report["manifest_source_count"], 21)
         self.assertGreaterEqual(report["verified_local_source_count"], 0)
 
     def test_audit_rejects_a_school_without_an_agent_descriptor(self) -> None:
