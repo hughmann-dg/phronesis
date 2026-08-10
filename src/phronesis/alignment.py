@@ -28,6 +28,9 @@ _SOURCE_FIRST_PROTOCOL = {
     "source_order": "before-option-evaluation",
     "recommendation_order": "after-feedback",
 }
+_SKILLS_ROOT = Path("skills")
+_DISCOVERY_SKILLS_ROOT = Path(".agents", "skills")
+_CANONICAL_SKILLS_MANIFEST_PATH = "./skills/"
 
 
 def audit_repository(root: str | Path) -> dict[str, Any]:
@@ -85,13 +88,13 @@ def audit_repository(root: str | Path) -> dict[str, Any]:
         )
 
     for doctrine in doctrines:
-        skill_path = root / "skills" / doctrine.id / "SKILL.md"
+        skill_path = root / _SKILLS_ROOT / doctrine.id / "SKILL.md"
         if not skill_path.is_file():
             errors.append(f"doctrine {doctrine.id} has no matching skill")
             skill_text = ""
         else:
             skill_text = skill_path.read_text(encoding="utf-8")
-        agent_path = root / "skills" / doctrine.id / "agents" / "openai.yaml"
+        agent_path = root / _SKILLS_ROOT / doctrine.id / "agents" / "openai.yaml"
         if not agent_path.is_file():
             errors.append(f"doctrine {doctrine.id} has no agent descriptor")
         for source in doctrine.sources:
@@ -106,7 +109,7 @@ def audit_repository(root: str | Path) -> dict[str, Any]:
                 if not isinstance(source.locator, str) or not source.locator.strip():
                     errors.append(f"doctrine {doctrine.id} source has no locator: {source.id}")
         if doctrine.reference_skill:
-            reference_path = root / "skills" / doctrine.reference_skill / "SKILL.md"
+            reference_path = root / _SKILLS_ROOT / doctrine.reference_skill / "SKILL.md"
             if not reference_path.is_file():
                 errors.append(f"doctrine {doctrine.id} reference skill is missing: {doctrine.reference_skill}")
             required_link = f"../{doctrine.reference_skill}/SKILL.md"
@@ -117,7 +120,7 @@ def audit_repository(root: str | Path) -> dict[str, Any]:
             if _embedded_protocol(skill_text, "source-first-protocol") != expected_source_protocol:
                 errors.append(f"skill {doctrine.id} has no source-first deliberation protocol")
 
-    council_skill_path = root / "skills" / "council" / "SKILL.md"
+    council_skill_path = root / _SKILLS_ROOT / "council" / "SKILL.md"
     try:
         council_skill_text = council_skill_path.read_text(encoding="utf-8")
     except OSError:
@@ -129,10 +132,32 @@ def audit_repository(root: str | Path) -> dict[str, Any]:
         "Return the standard counsel contract plus",
         "Return the standard counsel contract and include",
     )
-    for skill_path in (root / "skills").glob("*/SKILL.md"):
+    for skill_path in (root / _SKILLS_ROOT).glob("*/SKILL.md"):
         text = skill_path.read_text(encoding="utf-8")
         if any(phrase in text for phrase in forbidden_contract_phrases):
             errors.append(f"skill {skill_path.parent.name} adds fields outside the extension container")
+        metadata = _skill_metadata(text)
+        skill_name = metadata.get("name")
+        description = metadata.get("description")
+        if not isinstance(skill_name, str) or not re.fullmatch(r"[a-z0-9-]{1,64}", skill_name):
+            errors.append(f"skill {skill_path.parent.name} has nonportable name metadata: {skill_name}")
+        elif skill_name != skill_path.parent.name:
+            errors.append(f"skill {skill_path.parent.name} name metadata does not match its directory")
+        if not isinstance(description, str) or not description.strip() or len(description) > 1024:
+            errors.append(f"skill {skill_path.parent.name} has nonportable description metadata")
+        adapter_path = root / _DISCOVERY_SKILLS_ROOT / skill_path.parent.name / "SKILL.md"
+        try:
+            adapter_text = adapter_path.read_text(encoding="utf-8")
+        except OSError:
+            errors.append(f"skill {skill_path.parent.name} has no repository discovery adapter")
+        else:
+            if adapter_text != _discovery_adapter_text(skill_path.parent.name, text):
+                errors.append(f"skill {skill_path.parent.name} repository discovery adapter has drifted")
+
+    canonical_skill_names = {path.parent.name for path in (root / _SKILLS_ROOT).glob("*/SKILL.md")}
+    adapter_skill_names = {path.parent.name for path in (root / _DISCOVERY_SKILLS_ROOT).glob("*/SKILL.md")}
+    for extra_name in sorted(adapter_skill_names - canonical_skill_names):
+        errors.append(f"repository discovery adapter has no canonical skill: {extra_name}")
 
     missing_links = _missing_markdown_links(root)
     errors.extend(f"missing local Markdown link: {path} -> {target}" for path, target in missing_links)
@@ -180,22 +205,32 @@ def audit_repository(root: str | Path) -> dict[str, Any]:
             except (OSError, KeyError, json.JSONDecodeError, ValidationError) as exc:
                 errors.append(f"cannot validate local source record {record_path.name}: {exc}")
 
-    plugin_manifest_path = root / ".codex-plugin" / "plugin.json"
+    plugin_manifests = {
+        "OpenAI": root / ".codex-plugin" / "plugin.json",
+        "Claude": root / ".claude-plugin" / "plugin.json",
+    }
     for required_path in (
         root / "MANIFEST.in",
         root / "setup.py",
-        plugin_manifest_path,
+        *plugin_manifests.values(),
+        root / _SKILLS_ROOT / "council" / "references" / "host-adapters.md",
+        root / "scripts" / "sync_skill_adapters.py",
         root / "tests" / "test_doctrine_contracts.py",
     ):
         if not required_path.is_file():
             errors.append(f"packaging guard is missing: {required_path.name}")
-    if plugin_manifest_path.is_file():
+    for host, plugin_manifest_path in plugin_manifests.items():
+        if not plugin_manifest_path.is_file():
+            continue
         try:
             plugin_manifest = json.loads(plugin_manifest_path.read_text(encoding="utf-8"))
-            if plugin_manifest.get("name") != "phronesis" or plugin_manifest.get("skills") != "./skills/":
-                errors.append("plugin manifest does not expose the Phronesis skill tree")
+            if (
+                plugin_manifest.get("name") != "phronesis"
+                or plugin_manifest.get("skills") != _CANONICAL_SKILLS_MANIFEST_PATH
+            ):
+                errors.append(f"{host} plugin manifest does not expose the canonical Phronesis skill tree")
         except (OSError, json.JSONDecodeError, AttributeError) as exc:
-            errors.append(f"cannot validate plugin manifest: {exc}")
+            errors.append(f"cannot validate {host} plugin manifest: {exc}")
 
     return {
         "errors": sorted(errors),
@@ -311,6 +346,43 @@ def _embedded_protocol(text: str, name: str) -> dict[str, str] | None:
             return None
         protocol[key] = value
     return protocol
+
+
+def _skill_metadata(text: str) -> dict[str, str]:
+    lines = text.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return {}
+    metadata: dict[str, str] = {}
+    for line in lines[1:]:
+        if line.strip() == "---":
+            return metadata
+        if ":" not in line:
+            continue
+        key, raw_value = line.split(":", 1)
+        value = raw_value.strip()
+        if value.startswith('"'):
+            try:
+                value = json.loads(value)
+            except json.JSONDecodeError:
+                return {}
+        metadata[key.strip()] = value
+    return {}
+
+
+def _discovery_adapter_text(skill_name: str, canonical_text: str) -> str:
+    metadata = _skill_metadata(canonical_text)
+    name = metadata.get("name", "")
+    description = metadata.get("description", "")
+    return (
+        "---\n"
+        f"name: {name}\n"
+        f"description: {json.dumps(description, ensure_ascii=False)}\n"
+        "---\n\n"
+        "# Repository discovery adapter\n\n"
+        f"Read and follow the [canonical `{skill_name}` skill](../../../skills/{skill_name}/SKILL.md) "
+        "completely before acting. Resolve every relative link from that canonical skill's directory. "
+        "This adapter contains no doctrine or source claims; the canonical skill is authoritative.\n"
+    )
 
 
 def _missing_markdown_links(root: Path) -> list[tuple[str, str]]:

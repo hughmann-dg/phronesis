@@ -1,9 +1,12 @@
 include AGENTS.md
 include .codex-plugin/plugin.json
+include .claude-plugin/plugin.json
 recursive-include benchmarks *.json
 recursive-include docs *.md
 recursive-include schemas *.json
+recursive-include .agents/skills *
 recursive-include skills *
+include scripts/sync_skill_adapters.py
 include sources/README.md
 include sources/manifest.yaml
 prune sources/corpus

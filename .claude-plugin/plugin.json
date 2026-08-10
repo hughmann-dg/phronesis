@@ -1,0 +1,11 @@
+{
+  "name": "phronesis",
+  "version": "0.2.0",
+  "description": "Source-grounded pluralistic decision counsel with explicit philosophical doctrines",
+  "author": {
+    "name": "Phronesis contributors"
+  },
+  "license": "Apache-2.0",
+  "keywords": ["decision-making", "philosophy", "source-grounding"],
+  "skills": "./skills/"
+}

@@ -31,17 +31,37 @@ $env:PYTHONPATH = "src"
 python -m phronesis council tests/fixtures/system_migration.json
 ```
 
-## Install the Codex plugin
+## Install the skills
 
-The repository root is a skills-only Codex plugin through `.codex-plugin/plugin.json`. A Python install makes the CLI available but does not register Codex skills. From this checkout, give Codex this exact request:
+Phronesis keeps one canonical Agent Skills tree in `skills/`. The OpenAI and Claude plugin manifests expose it to ChatGPT Work, Codex, Claude Code, and Claude Cowork. Codex repository mode and GitHub Copilot discover generated adapters in `.agents/skills`; each adapter routes to the canonical skill, so doctrine and source books are never copied between hosts.
+
+### Codex and ChatGPT Work
+
+The repository root is a skills-only OpenAI plugin through `.codex-plugin/plugin.json`. A Python install makes the CLI available but does not register the plugin. From this checkout, give Codex this exact request:
 
 ```text
 $plugin-creator Add the existing plugin at C:\Users\mikes\Documents\Codex\phronesis to my personal marketplace, preserving this checkout as the plugin source.
 ```
 
-Refresh Codex, open the CLI with `codex`, enter `/plugins`, install **Phronesis** from the Personal marketplace, and start a new task. Confirm that `aristotelian-counsel` and `aristotle-works` both appear among its bundled skills. After installation, invoking `aristotelian-counsel` explicitly routes through the bundled `aristotle-works` reference skill before quoting.
+Refresh Codex, open `/plugins`, install **Phronesis** from the Personal marketplace, and start a new task. The same plugin can be distributed to ChatGPT Work through the shared plugin directory. Confirm that `aristotelian-counsel` and `aristotle-works` both appear among its bundled skills.
 
 See the official [plugin packaging guide](https://developers.openai.com/plugins/build/plugins) for marketplace and distribution options.
+
+### Claude Code and Cowork
+
+The repository root is also a Claude plugin through `.claude-plugin/plugin.json`. Test it directly in Claude Code:
+
+```text
+claude --plugin-dir .
+```
+
+Invoke `/phronesis:council`, or let Claude select it from its description. In Claude Desktop or Cowork, upload the repository as a custom plugin or distribute it through a Claude plugin marketplace. Claude Code and Cowork can run the full Council when Agent/subagent delegation is enabled.
+
+### GitHub Copilot
+
+Open the repository in a supported Copilot agent surface. Copilot discovers the adapters under `.agents/skills`; invoke `council` explicitly or ask for a Phronesis Council decision review. Copilot CLI is the verified full-Council surface; IDE agent mode also works when subagents are enabled. The adapters contain no Copilot-only doctrine or source content.
+
+The Council requires fresh-context delegation. On hosts with subagent/custom-agent orchestration it assigns one school per isolated agent. ChatGPT Work can discover and invoke the plugin, but it runs the full Council only when the active Work environment exposes fresh-context delegation. On any surface without that capability, the skill refuses to simulate nine independent votes in one context and offers a single-school or deterministic CLI fallback.
 
 ## Core commands
 
@@ -102,7 +122,8 @@ print(result.synthesis.recommendation)
 
 ```text
 src/phronesis/  executable models, doctrines, Council, corpus, journal, CLI
-skills/         reusable school and Council procedures
+skills/         canonical school, source-work, and Council procedures
+.agents/skills/ generated repository-discovery adapters
 schemas/        JSON contracts
 sources/        provenance manifest and rights-controlled corpus location
 benchmarks/     five-domain evaluation suite

@@ -6,6 +6,10 @@ import unittest
 from phronesis.alignment import _load_flat_manifest, audit_repository
 
 
+SKILLS_ROOT = Path("skills")
+DISCOVERY_SKILLS_ROOT = Path(".agents", "skills")
+
+
 def _copy_repository(parent: str) -> Path:
     copied_root = Path(parent, "repository")
     shutil.copytree(
@@ -28,7 +32,7 @@ class AlignmentTests(unittest.TestCase):
     def test_audit_rejects_a_school_without_an_agent_descriptor(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             copied_root = _copy_repository(directory)
-            Path(copied_root, "skills", "aristotelian-counsel", "agents", "openai.yaml").unlink()
+            Path(copied_root, SKILLS_ROOT, "aristotelian-counsel", "agents", "openai.yaml").unlink()
 
             report = audit_repository(copied_root)
 
@@ -40,7 +44,7 @@ class AlignmentTests(unittest.TestCase):
     def test_audit_rejects_council_without_independent_agent_protocol(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             copied_root = _copy_repository(directory)
-            council_skill = Path(copied_root, "skills", "council", "SKILL.md")
+            council_skill = Path(copied_root, SKILLS_ROOT, "council", "SKILL.md")
             council_skill.write_text(
                 council_skill.read_text(encoding="utf-8").replace(
                     "advisor_context: fresh-per-school",
@@ -59,7 +63,7 @@ class AlignmentTests(unittest.TestCase):
     def test_audit_rejects_voting_school_without_source_first_deliberation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             copied_root = _copy_repository(directory)
-            school_skill = Path(copied_root, "skills", "aristotelian-counsel", "SKILL.md")
+            school_skill = Path(copied_root, SKILLS_ROOT, "aristotelian-counsel", "SKILL.md")
             school_skill.write_text(
                 school_skill.read_text(encoding="utf-8").replace(
                     "source_order: before-option-evaluation",
@@ -72,6 +76,60 @@ class AlignmentTests(unittest.TestCase):
 
             self.assertIn(
                 "skill aristotelian-counsel has no source-first deliberation protocol",
+                report["errors"],
+            )
+
+    def test_audit_rejects_host_manifests_that_do_not_share_the_canonical_tree(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            copied_root = _copy_repository(directory)
+            claude_manifest = Path(copied_root, ".claude-plugin", "plugin.json")
+            claude_manifest.write_text(
+                '{"name": "phronesis", "skills": "./.agents/skills/"}',
+                encoding="utf-8",
+            )
+
+            report = audit_repository(copied_root)
+
+            self.assertIn(
+                "Claude plugin manifest does not expose the canonical Phronesis skill tree",
+                report["errors"],
+            )
+
+    def test_audit_rejects_nonportable_skill_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            copied_root = _copy_repository(directory)
+            council_skill = Path(copied_root, SKILLS_ROOT, "council", "SKILL.md")
+            council_skill.write_text(
+                council_skill.read_text(encoding="utf-8").replace(
+                    "name: council",
+                    "name: Council Skill",
+                ),
+                encoding="utf-8",
+            )
+
+            report = audit_repository(copied_root)
+
+            self.assertIn(
+                "skill council has nonportable name metadata: Council Skill",
+                report["errors"],
+            )
+
+    def test_audit_rejects_a_drifted_repository_discovery_adapter(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            copied_root = _copy_repository(directory)
+            adapter = Path(copied_root, DISCOVERY_SKILLS_ROOT, "council", "SKILL.md")
+            adapter.write_text(
+                adapter.read_text(encoding="utf-8").replace(
+                    "canonical `council` skill",
+                    "canonical Council implementation",
+                ),
+                encoding="utf-8",
+            )
+
+            report = audit_repository(copied_root)
+
+            self.assertIn(
+                "skill council repository discovery adapter has drifted",
                 report["errors"],
             )
 

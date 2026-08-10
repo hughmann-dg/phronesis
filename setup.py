@@ -6,7 +6,7 @@ from setuptools import setup
 
 
 PROJECT_ROOT = Path(__file__).parent
-ASSET_ROOTS = ("benchmarks", "docs", "schemas", "skills", "sources")
+ASSET_ROOTS = (".agents", "benchmarks", "docs", "schemas", "skills", "sources")
 
 
 def asset_data_files() -> list[tuple[str, list[str]]]:
@@ -19,11 +19,12 @@ def asset_data_files() -> list[tuple[str, list[str]]]:
             relative = path.relative_to(PROJECT_ROOT)
             destination = (Path("share") / "phronesis" / relative.parent).as_posix()
             grouped.setdefault(destination, []).append(relative.as_posix())
-    plugin_manifest = PROJECT_ROOT / ".codex-plugin" / "plugin.json"
-    if plugin_manifest.is_file():
-        grouped.setdefault("share/phronesis/.codex-plugin", []).append(
-            plugin_manifest.relative_to(PROJECT_ROOT).as_posix()
-        )
+    for manifest_directory in (".codex-plugin", ".claude-plugin"):
+        plugin_manifest = PROJECT_ROOT / manifest_directory / "plugin.json"
+        if plugin_manifest.is_file():
+            grouped.setdefault(f"share/phronesis/{manifest_directory}", []).append(
+                plugin_manifest.relative_to(PROJECT_ROOT).as_posix()
+            )
     return [(destination, sorted(paths)) for destination, paths in sorted(grouped.items())]
 
 

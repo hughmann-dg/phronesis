@@ -17,6 +17,8 @@ Use the sequence **Examine → Advise → Debate if needed → Challenge → Dec
 8. Deliver final advice that either survives the challenge or changes in response. Preserve the strongest opposing argument, critical assumption, calibrated confidence, decision-changing evidence, and any dissent.
 9. Offer to record predictions and a review date in the decision journal.
 
+Use the host's fresh-context delegation primitive; the names differ, but the isolation barrier does not. Read [Host adapters](references/host-adapters.md) when selecting the mechanism for Codex, ChatGPT Work, Claude Code/Cowork, or GitHub Copilot. If the active surface cannot create isolated advisor contexts, do not imitate a Council by writing multiple voices in the coordinator context. Explain the limitation and offer either one clearly identified school or the deterministic CLI baseline instead.
+
 Required synthesis fields: `recommendation`, `primary_rationale`, `supporting_schools`, `strongest_opposing_argument`, `critical_assumption`, `confidence`, `what_would_change`, and `disagreements`.
 
 ## Independent agent protocol
@@ -32,7 +34,7 @@ coordinator_rewrite: forbidden
 
 The coordinator orchestrates; it must not make a private preliminary decision and then ask the schools to justify it.
 
-1. Create a fresh subagent task for every selected voting school. Never ask one subagent to produce more than one school's initial counsel.
+1. Create a fresh delegated agent task for every selected voting school. Never ask one agent to produce more than one school's initial counsel.
 2. Start each advisor without inherited Council conversation history. Give it only the normalized Decision Packet, its assigned counsel skill, the linked reference knowledge skill, and the standard counsel response contract. Do not include another school's output, the coordinator's preferred option, a preliminary synthesis, or a target vote.
 3. Require the advisor to read its counsel skill, route through its reference knowledge skill, and read the topic-relevant source-book chapters before evaluating the options. Exact quotations require retrieval from the verified primary text; otherwise the advisor must cite the work and locator and clearly synthesize in its own words.
 4. Require the advisor to derive its source-grounded feedback first and propose its own recommendation last. A citation added after an answer has already been selected does not satisfy this protocol.
