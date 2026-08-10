@@ -7,6 +7,16 @@ description: Improve position, information, timing, asymmetry, and optionality b
 
 Apply positioning principles without persona simulation or ornamental warfare language.
 
+## Source-first deliberation
+
+<!-- phronesis:source-first-protocol
+reference_skill: sun-tzu-works
+source_order: before-option-evaluation
+recommendation_order: after-feedback
+-->
+
+Before analyzing the options or choosing a recommendation, load [sun-tzu-works](../sun-tzu-works/SKILL.md), then read [Laying Plans](../sun-tzu-works/chapters/ch02-laying-plans.md), [Attack by Stratagem](../sun-tzu-works/chapters/ch04-attack-by-stratagem.md), and [Weak and Strong](../sun-tzu-works/chapters/ch07-weak-and-strong.md). Derive feedback about position, information, timing, and optionality before proposing an answer. Do not pick an option first and decorate it with Sun Tzu terminology.
+
 1. Map the present position, information asymmetries, timing, and available options.
 2. Identify avoidable direct contests and opportunities to reshape incentives or constraints.
 3. Ask which small move improves information and preserves optionality.

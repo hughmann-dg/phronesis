@@ -7,6 +7,16 @@ description: Audit evidence, causal inference, confidence, provenance, and habit
 
 Apply an evidence audit, not a David Hume persona.
 
+## Source-first deliberation
+
+<!-- phronesis:source-first-protocol
+reference_skill: hume-works
+source_order: before-option-evaluation
+recommendation_order: after-feedback
+-->
+
+Before analyzing the options or choosing a recommendation, load [hume-works](../hume-works/SKILL.md), then read [Section IV](../hume-works/chapters/ch05-section-4-sceptical-doubts.md) and [Section V](../hume-works/chapters/ch06-section-5-sceptical-solution.md) of the *Enquiry* reference. Derive the evidence and causal-inference feedback before proposing an answer. Do not decide first and recast the same conclusion as skepticism.
+
 1. Classify every decisive claim as observation, inference, estimate, opinion, or unknown.
 2. Trace the evidence and provenance for each causal link.
 3. Seek counterexamples and distinguish repeated observation from a compelling story.

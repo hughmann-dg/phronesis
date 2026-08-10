@@ -16,6 +16,20 @@ from .reasoning import supported_school_ids
 from .sources import SourceRecord
 
 
+_COUNCIL_AGENT_PROTOCOL = {
+    "advisor_context": "fresh-per-school",
+    "history": "packet-skill-reference-contract-only",
+    "source_order": "before-option-evaluation",
+    "collection_barrier": "all-initial-before-comparison",
+    "coordinator_preselection": "forbidden",
+    "coordinator_rewrite": "forbidden",
+}
+_SOURCE_FIRST_PROTOCOL = {
+    "source_order": "before-option-evaluation",
+    "recommendation_order": "after-feedback",
+}
+
+
 def audit_repository(root: str | Path) -> dict[str, Any]:
     """Return machine-readable errors when repository layers drift apart."""
 
@@ -98,6 +112,18 @@ def audit_repository(root: str | Path) -> dict[str, Any]:
             required_link = f"../{doctrine.reference_skill}/SKILL.md"
             if required_link not in skill_text:
                 errors.append(f"skill {doctrine.id} does not route through {doctrine.reference_skill}")
+        if doctrine.id != "socratic-examination":
+            expected_source_protocol = _SOURCE_FIRST_PROTOCOL | {"reference_skill": doctrine.reference_skill}
+            if _embedded_protocol(skill_text, "source-first-protocol") != expected_source_protocol:
+                errors.append(f"skill {doctrine.id} has no source-first deliberation protocol")
+
+    council_skill_path = root / "skills" / "council" / "SKILL.md"
+    try:
+        council_skill_text = council_skill_path.read_text(encoding="utf-8")
+    except OSError:
+        council_skill_text = ""
+    if _embedded_protocol(council_skill_text, "independent-agent-protocol") != _COUNCIL_AGENT_PROTOCOL:
+        errors.append("council skill has no independent agent protocol")
 
     forbidden_contract_phrases = (
         "Return the standard counsel contract plus",
@@ -263,6 +289,28 @@ def _yaml_scalar(value: str) -> Any:
     if value.startswith('"'):
         return json.loads(value)
     return value
+
+
+def _embedded_protocol(text: str, name: str) -> dict[str, str] | None:
+    match = re.search(
+        rf"<!--\s*phronesis:{re.escape(name)}\s*\n(?P<body>.*?)-->",
+        text,
+        flags=re.DOTALL,
+    )
+    if match is None:
+        return None
+    protocol: dict[str, str] = {}
+    for raw_line in match.group("body").splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        if ":" not in line:
+            return None
+        key, value = (part.strip() for part in line.split(":", 1))
+        if not key or not value or key in protocol:
+            return None
+        protocol[key] = value
+    return protocol
 
 
 def _missing_markdown_links(root: Path) -> list[tuple[str, str]]:

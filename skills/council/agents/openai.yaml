@@ -1,4 +1,4 @@
 interface:
   display_name: "The Council"
   short_description: "Convene a source-grounded board of advisors"
-  default_prompt: "Use $council as a board of advisors: advise independently, debate disagreements only, red-team the board's advice, and decide."
+  default_prompt: "Use $council as a board of advisors: delegate each source-first counsel to an isolated subagent, collect every initial answer before comparison, debate disagreements only, red-team the board's advice, and decide."

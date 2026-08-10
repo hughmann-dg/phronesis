@@ -5,6 +5,16 @@ description: Compare expected benefits, harms, probabilities, magnitudes, durati
 
 # Consequentialist Analysis
 
+## Source-first deliberation
+
+<!-- phronesis:source-first-protocol
+reference_skill: mill-works
+source_order: before-option-evaluation
+recommendation_order: after-feedback
+-->
+
+Before analyzing the options or choosing a recommendation, load [mill-works](../mill-works/SKILL.md), then read [Utilitarianism, Chapter II](../mill-works/chapters/ch03-what-utilitarianism-is.md) and [Chapter V](../mill-works/chapters/ch06-justice-and-utility.md). Derive the stakeholder benefit, harm, distribution, and justice feedback before proposing an answer. Do not select an option first and retrofit an aggregate-benefit rationale.
+
 1. Enumerate stakeholders, including missing or weakly represented groups.
 2. Map benefits and harms by option, with probability, magnitude, duration, and reversibility.
 3. Include second-order effects and correlated risks.
