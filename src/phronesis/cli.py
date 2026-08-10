@@ -35,9 +35,9 @@ def _parser() -> argparse.ArgumentParser:
     ask.add_argument("packet")
     ask.add_argument("--corpus-dir", default="sources/corpus", help="ingested primary-source corpus")
 
-    council = sub.add_parser("council", help="run independent counsel, contest, red team, and arbiter")
+    council = sub.add_parser("council", help="convene an advisory board with conditional debate and mandatory red team")
     council.add_argument("packet")
-    council.add_argument("--schools", nargs="+", help="school ids; defaults to the initial five")
+    council.add_argument("--schools", nargs="+", help="school ids; defaults to all nine voting advisors")
     council.add_argument("--corpus-dir", default="sources/corpus", help="ingested primary-source corpus")
     council.add_argument("--record", action="store_true", help="record the result in a decision journal")
     council.add_argument("--journal-dir", default="decisions")

@@ -1,4 +1,4 @@
-"""The Counsel → Contest → Decide workflow after packet examination."""
+"""The Advise → Debate if needed → Challenge → Decide workflow after examination."""
 
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ class Reasoner(Protocol):
 
 
 class Council:
-    """Orchestrates independent counsel, challenge, red team, and synthesis."""
+    """Orchestrates independent advice, conditional debate, red team, and synthesis."""
 
     def __init__(self, reasoner: Reasoner | None = None) -> None:
         self.reasoner = reasoner or HeuristicReasoner()
@@ -63,10 +63,17 @@ class Council:
         counsels = tuple(self.ask(school_id, packet) for school_id in selected)
         if any(counsel.recommendation is None for counsel in counsels):
             raise ValueError("Socratic Examination is an intake mode and cannot cast a Council vote")
-        cross_examinations = self._cross_examine(counsels, packet)
+        recommendations = {counsel.recommendation for counsel in counsels}
+        cross_examinations = self._cross_examine(counsels, packet) if len(recommendations) > 1 else ()
         preliminary = self._synthesize(counsels, packet, cross_examinations, red_team=None)
         red_team = self._red_team(preliminary.recommendation, counsels, packet)
         synthesis = self._synthesize(counsels, packet, cross_examinations, red_team=red_team)
+
+        debate_summary = (
+            f"{len(cross_examinations)} challenges tested the board's disagreements."
+            if cross_examinations
+            else "The advisors agreed on a recommendation, so debate was skipped."
+        )
 
         return CouncilResult(
             packet=packet.to_dict(),
@@ -75,9 +82,9 @@ class Council:
             red_team=red_team,
             synthesis=synthesis,
             stages=(
-                StageRecord("counsel", f"{len(counsels)} schools advised independently."),
-                StageRecord("cross_examination", f"{len(cross_examinations)} challenges preserved disagreements."),
-                StageRecord("red_team", f"The leading option {red_team.target_recommendation!r} was attacked without a vote."),
+                StageRecord("counsel", f"{len(counsels)} advisors gave independent advice."),
+                StageRecord("cross_examination", debate_summary),
+                StageRecord("red_team", f"The board's advice {red_team.target_recommendation!r} was challenged without a vote."),
                 StageRecord("arbiter", f"The arbiter selected {synthesis.recommendation!r} rather than averaging positions."),
             ),
         )
@@ -100,7 +107,10 @@ class Council:
         )
         for critic, target, challenge in specs:
             if critic in by_id and target in by_id:
+                critic_counsel = by_id[critic]
                 target_counsel = by_id[target]
+                if critic_counsel.recommendation == target_counsel.recommendation:
+                    continue
                 contested = (
                     target_counsel.assumptions[0]
                     if target_counsel.assumptions
@@ -116,15 +126,21 @@ class Council:
                     )
                 )
         if not challenges:
-            for critic, target in zip(counsels, counsels[1:]):
-                challenges.append(
-                    CrossExamination(
-                        critic.school_id,
-                        target.school_id,
-                        f"What evidence would make {target.recommendation!r} fail under this doctrine?",
-                        target.assumptions[0] if target.assumptions else "The recommendation survives its stated risks.",
-                    )
+            for critic in counsels:
+                target = next(
+                    (candidate for candidate in counsels if candidate.recommendation != critic.recommendation),
+                    None,
                 )
+                if target is not None:
+                    challenges.append(
+                        CrossExamination(
+                            critic.school_id,
+                            target.school_id,
+                            f"What evidence would make {target.recommendation!r} fail under this doctrine?",
+                            target.assumptions[0] if target.assumptions else "The recommendation survives its stated risks.",
+                        )
+                    )
+                    break
         return tuple(challenges)
 
     def _red_team(
@@ -223,9 +239,14 @@ class Council:
             f"{c.school_name} recommends {c.recommendation!r} rather than {recommendation!r}."
             for c in opponents
         ) or ("The schools agree on the option but emphasize different failure modes.",)
+        review_path = "source basis"
+        if cross_examinations:
+            review_path += ", board debate"
+        if red_team is not None:
+            review_path += ", and red-team exposure"
         return Synthesis(
             recommendation=recommendation,
-            primary_rationale=f"After weighing source basis, cross-examination, and red-team exposure: {lead.strongest_reason}",
+            primary_rationale=f"After weighing {review_path}: {lead.strongest_reason}",
             supporting_schools=supporters,
             strongest_opposing_argument=opposing,
             critical_assumption=critical,

@@ -1,20 +1,21 @@
 ---
 name: council
-description: "Run the Phronesis Council workflow for a substantive decision: normalize intake, gather independent school counsel, cross-examine disagreements, red-team the leader, synthesize a concrete decision, preserve dissent, and optionally record it for review."
+description: "Convene the Phronesis Council as a board of advisors for a substantive decision: gather independent source-grounded advice, debate only when recommendations differ, always red-team the board's advice, deliver a concrete recommendation, preserve dissent, and optionally record it for review."
 ---
 
 # The Council
 
-Use the sequence **Examine → Counsel → Contest → Decide → Review**. The executable `Council.convene` assumes a normalized packet is ready for deliberation; call the separate examination seam first whenever framing is incomplete.
+Use the sequence **Examine → Advise → Debate if needed → Challenge → Decide → Review**. Treat the Council as a board of independent advisors, not a debating society. The executable `Council.convene` assumes a normalized packet is ready; call the separate examination seam first whenever framing is incomplete.
 
 1. Normalize a Decision Packet and separate facts, assumptions, estimates, opinions, and unknowns.
 2. Use Socratic examination if the framing is incomplete.
-3. Select differentiated, relevant schools. Use all nine voting schools by default; narrow the set only when the user requests it or a doctrine explicitly defers. Give each only the packet and its doctrine; collect counsel independently before sharing conclusions.
-4. Cross-examine load-bearing assumptions across schools.
-5. Run the red team against the leading option without giving it a vote.
-6. Act as arbiter. Choose an option instead of averaging positions into vague consensus.
-7. Preserve the strongest opposing argument, critical assumption, calibrated confidence, and decision-changing evidence.
-8. Offer to record predictions and a review date in the decision journal.
+3. Select differentiated, relevant advisors. Use all nine voting schools by default; narrow the board only when the user requests it or a doctrine explicitly defers.
+4. Give each advisor only the packet and its doctrine. Collect every response before revealing another advisor's conclusion.
+5. Compare recommendations. If all advisors recommend the same option, skip debate. If recommendations differ, debate only the disputed recommendations and their load-bearing assumptions.
+6. Synthesize the preliminary board advice without averaging positions into vague consensus.
+7. Always run the Red Team against that advice. Require holes, failure cases, fragile assumptions, and mitigation tests; the Red Team challenges but never votes.
+8. Deliver final advice that either survives the challenge or changes in response. Preserve the strongest opposing argument, critical assumption, calibrated confidence, decision-changing evidence, and any dissent.
+9. Offer to record predictions and a review date in the decision journal.
 
 Required synthesis fields: `recommendation`, `primary_rationale`, `supporting_schools`, `strongest_opposing_argument`, `critical_assumption`, `confidence`, `what_would_change`, and `disagreements`.
 

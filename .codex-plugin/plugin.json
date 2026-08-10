@@ -11,7 +11,7 @@
   "interface": {
     "displayName": "Phronesis",
     "shortDescription": "Source-grounded pluralistic decision counsel",
-    "longDescription": "Examine decisions through independent philosophical doctrines, preserve disagreement, red-team the leader without a vote, and synthesize actionable counsel.",
+    "longDescription": "Convene independent philosophical advisors, debate only when their recommendations differ, always red-team the board's advice without a vote, and synthesize actionable counsel.",
     "developerName": "Phronesis contributors",
     "category": "Productivity",
     "capabilities": ["Interactive", "Read"],

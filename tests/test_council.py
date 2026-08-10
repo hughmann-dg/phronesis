@@ -54,7 +54,7 @@ class CouncilTests(unittest.TestCase):
     def setUp(self) -> None:
         self.packet = DecisionPacket.from_dict(json.loads(FIXTURE.read_text(encoding="utf-8")))
 
-    def test_council_runs_counsel_contest_red_team_and_decision(self) -> None:
+    def test_council_runs_advisory_board_red_team_and_decision(self) -> None:
         result = Council().convene(self.packet)
 
         expected_schools = {
@@ -70,15 +70,8 @@ class CouncilTests(unittest.TestCase):
         }
         self.assertEqual({counsel.school_id for counsel in result.counsels}, expected_schools)
         self.assertTrue(all(counsel.philosophical_basis for counsel in result.counsels))
-        self.assertTrue(result.cross_examinations)
-        self.assertEqual(
-            {challenge.critic_school_id for challenge in result.cross_examinations},
-            expected_schools,
-        )
-        self.assertEqual(
-            {challenge.target_school_id for challenge in result.cross_examinations},
-            expected_schools,
-        )
+        self.assertEqual(result.cross_examinations, ())
+        self.assertIn("debate was skipped", result.stages[1].summary)
         self.assertNotIn("red-team", result.synthesis.supporting_schools)
         self.assertIn(result.synthesis.recommendation, self.packet.options)
         self.assertEqual(result.synthesis.recommendation, "incremental migration")
@@ -141,12 +134,32 @@ class CouncilTests(unittest.TestCase):
         self.assertEqual(recommendations_a, recommendations_b)
 
     def test_cross_examination_targets_the_actual_counsel(self) -> None:
-        result = Council().convene(self.packet)
-        challenge = result.cross_examinations[0]
-        target = next(counsel for counsel in result.counsels if counsel.school_id == challenge.target_school_id)
+        packet = DecisionPacket.from_dict(
+            {
+                "decision": "How should we introduce a disputed policy?",
+                "objective": "Adopt a legitimate policy with reliable evidence and stakeholder cooperation",
+                "options": [
+                    "run a measurement pilot",
+                    "negotiate a stakeholder coalition",
+                    "mandate immediate adoption",
+                ],
+                "constraints": ["A decision is due this quarter"],
+                "stakeholders": ["customers", "employees", "regulators"],
+                "unknowns": ["Measured effect on customer trust"],
+            }
+        )
 
-        self.assertIn(repr(target.recommendation), challenge.challenge)
-        self.assertIn(target.strongest_reason, challenge.challenge)
+        result = Council().convene(packet)
+        counsels = {counsel.school_id: counsel for counsel in result.counsels}
+
+        self.assertTrue(result.cross_examinations)
+        for challenge in result.cross_examinations:
+            with self.subTest(critic=challenge.critic_school_id, target=challenge.target_school_id):
+                critic = counsels[challenge.critic_school_id]
+                target = counsels[challenge.target_school_id]
+                self.assertNotEqual(critic.recommendation, target.recommendation)
+                self.assertIn(repr(target.recommendation), challenge.challenge)
+                self.assertIn(target.strongest_reason, challenge.challenge)
 
     def test_neutral_counsel_is_invariant_to_option_order(self) -> None:
         base = {
@@ -242,8 +255,46 @@ class CouncilTests(unittest.TestCase):
             ["aristotelian-counsel", "stoic-counsel"],
         )
 
+        self.assertTrue(result.cross_examinations)
         self.assertEqual(result.red_team.target_recommendation, "A")
         self.assertEqual(result.synthesis.recommendation, result.red_team.target_recommendation)
+
+    def test_unanimous_board_skips_debate_but_red_team_still_challenges_its_advice(self) -> None:
+        class UnanimousReasoner:
+            def counsel(self, packet, doctrine):
+                return CounselResponse(
+                    school_id=doctrine.id,
+                    school_name=doctrine.name,
+                    recommendation="A",
+                    strongest_reason="A documented reason",
+                    reasoning=("A documented reason",),
+                    assumptions=(),
+                    major_risks=("A material risk",),
+                    confidence=0.62,
+                    what_would_change=("New evidence",),
+                    disconfirming_evidence=("A counterexample",),
+                    philosophical_basis=(
+                        PhilosophicalBasis(
+                            "A principle",
+                            doctrine.sources[0].id,
+                            doctrine.sources[0].citation,
+                            "Application",
+                        ),
+                    ),
+                )
+
+        packet = DecisionPacket.from_dict({"decision": "Choose", "objective": "Choose well", "options": ["A", "B"]})
+
+        result = Council(UnanimousReasoner()).convene(
+            packet,
+            ["aristotelian-counsel", "stoic-counsel"],
+        )
+
+        self.assertEqual(result.cross_examinations, ())
+        self.assertEqual(result.red_team.target_recommendation, "A")
+        self.assertTrue(result.red_team.hidden_assumptions)
+        self.assertTrue(result.red_team.catastrophic_edge_cases)
+        self.assertTrue(result.red_team.mitigation_tests)
 
     def test_council_validates_reasoner_output_at_the_public_boundary(self) -> None:
         class InvalidReasoner:

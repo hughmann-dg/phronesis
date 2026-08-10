@@ -4,9 +4,9 @@
 
 - Repository policy, licensing, schemas, and docs
 - Decision Packet validation and claim separation
-- Nine explicit doctrines and reusable skills
-- Initial five-school independent Council
-- Cross-examination, red team, and concrete arbiter synthesis
+- Ten explicit doctrines and reusable skills
+- Nine-advisor default Council with separate Socratic intake
+- Conditional debate, mandatory red team, and concrete arbiter synthesis
 - Philosophical-basis output with source locators
 - Rights-gated local primary-text retrieval
 - Decision journal, outcome review, and aggregate calibration signals

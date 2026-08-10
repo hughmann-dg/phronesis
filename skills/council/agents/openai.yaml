@@ -1,4 +1,4 @@
 interface:
   display_name: "The Council"
-  short_description: "Convene independent pluralistic deliberation"
-  default_prompt: "Use $council to counsel, contest, red-team, and decide on this packet."
+  short_description: "Convene a source-grounded board of advisors"
+  default_prompt: "Use $council as a board of advisors: advise independently, debate disagreements only, red-team the board's advice, and decide."

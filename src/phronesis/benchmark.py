@@ -204,7 +204,8 @@ def _council_contract_is_valid(
     expected_supporters = tuple(
         counsel.school_id for counsel in result.counsels if counsel.recommendation == synthesis.recommendation
     )
-    cross_examinations_ok = bool(result.cross_examinations) and all(
+    recommendations_disagree = len({counsel.recommendation for counsel in result.counsels}) > 1
+    cross_examinations_ok = bool(result.cross_examinations) == recommendations_disagree and all(
         isinstance(challenge, CrossExamination)
         and challenge.critic_school_id in school_ids
         and challenge.target_school_id in school_ids
